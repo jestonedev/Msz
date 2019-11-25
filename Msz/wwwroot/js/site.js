@@ -2,3 +2,14 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+
+$(document).ready(function () {
+    $("#msz-category-file-btn").on("change", function () {
+        $(this).closest("form").submit();
+    });
+
+    $(".msz-pagination li.disabled a").on("click", function (e) {
+        e.preventDefault();
+    });
+});

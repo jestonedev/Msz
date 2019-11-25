@@ -5,33 +5,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Msz.Models;
+using Msz.Services;
+using Msz.ViewModels;
 
 namespace Msz.Controllers
 {
     public class ReceiverController : Controller
     {
-        public IActionResult Index()
+        private readonly IReceiverService _receiverSeriver;
+
+        public ReceiverController(IReceiverService receiverSeriver)
         {
-            return View();
+            _receiverSeriver = receiverSeriver;
         }
 
-        public IActionResult About()
+        public IActionResult Index(ReceiverIndexViewModel viewModel = null)
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            var resultViewModel = _receiverSeriver.GetIndexViewModel(viewModel);
+            return View(resultViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

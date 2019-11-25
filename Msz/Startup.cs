@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Msz.DatabaseContext;
+using Msz.Services;
 
 namespace Msz
 {
@@ -33,7 +34,9 @@ namespace Msz
             });
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<DatabaseContext.MszDbContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<MszDbContext>(options => options.UseSqlServer(connection, builder => builder.UseRowNumberForPaging()));
+            services.AddTransient<IMszDbContext, MszDbContext>();
+            services.AddTransient<IReceiverService, ReceiverService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

@@ -1,37 +1,109 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
 body {
-    padding-top: 50px;
+    padding-top: 20px;
     padding-bottom: 20px;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.msz-right-tool-group {
+    text-align: right;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.msz-center-tool-group {
+    text-align: center;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
+.msz-egisso-btn-group, .msz-egisso-btn, .msz-add-receiver-btn {
     width: 100%;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+.msz-cancel-search-btn, .msz-search-btn {
+    width: 48%;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
+.msz-cancel-search-btn {
+    float: right;
+}
+
+.msz-search-btn {
+    float: left;
+}
+
+.msz-add-receiver-btn, .msz-cancel-search-btn, .msz-search-btn {
+    margin-top: 5pt;
+}
+
+.dropdown-menu > li #msz-category-file-btn {
+    visibility: hidden;
+    position: absolute;
+    left: -33333px;
+}
+
+    .dropdown-menu > li #msz-category-file-btn ~ label:hover, .dropdown-menu > li #msz-category-file-btn ~ label:focus {
+        color: #262626;
+        text-decoration: none;
+        background-color: #f5f5f5;
+    }
+
+    .dropdown-menu > li #msz-category-file-btn ~ label {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: #333333;
+        white-space: nowrap;
+        margin-bottom: 0;
+        cursor: pointer;
+    }
+
+
+.msz-receiver-table-wrapper {
+    margin-top: 20px;
+}
+
+    .msz-receiver-table-wrapper table.table td, .msz-receiver-table-wrapper table.table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+.msz-receiver-table-control {
+    width: 100px;
+}
+
+.msz-receiver-table-empty {
+    font-style: italic;
+}
+
+.msz-pagination {
+    margin-top: 0;
+}
+
+@media(min-width: 768px) {
+    .msz-egisso-btn, .msz-add-receiver-btn, .msz-cancel-search-btn, .msz-search-btn {
+        margin: 0;
+    }
+
+    .msz-cancel-search-btn {
+        margin-left: 5pt;
+    }
+
+    .msz-egisso-btn, .msz-add-receiver-btn {
+        width: 170px;
+    }
+
+    ..msz-egisso-btn-group {
+        width: initial;
+    }
+
+    .msz-cancel-search-btn, .msz-search-btn {
+        width: 140px;
+        float: none;
+    }
+}
+
+@media(min-width: 992px) {
+    .msz-cancel-search-btn, .msz-search-btn {
+        width: 170px
     }
 }

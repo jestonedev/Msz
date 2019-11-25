@@ -9,7 +9,7 @@ using Msz.DatabaseContext.Configurations;
 
 namespace Msz.DatabaseContext
 {
-    public class MszDbContext : DbContext
+    public class MszDbContext : DbContext, IMszDbContext
     {
         public DbSet<Models.Msz> Mszs { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -24,7 +24,6 @@ namespace Msz.DatabaseContext
         public MszDbContext(DbContextOptions<MszDbContext> options, IConfiguration config)
             : base(options)
         {
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
