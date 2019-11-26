@@ -1,0 +1,165 @@
+﻿@using Msz.ViewModels;
+@model ReceiverViewModel
+
+@{
+    var genders = new SelectList(Model.Genders, "Id", "Name");
+    var mszs = new SelectList(Model.Mszs, "Id", "Name");
+    var categories = new SelectList(Model.Categories, "Id", "Name");
+    var assigmentForms = new SelectList(Model.AssigmentForms, "Id", "Name");
+}
+
+<input type="hidden" name="returnUrl" value="@ViewData["returnUrl"]" />
+<input type="hidden" asp-for="Receiver.Uuid"/>
+<h3 class="msz-sub-header">Сведения о получателе</h3>
+<hr class="msz-sub-header-underline" />
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.Surname" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-4">
+        <input asp-for="Receiver.Surname" class="form-control" />
+        <span asp-validation-for="Receiver.Surname" class="field-validation-error"></span>
+    </div>
+    <label asp-for="Receiver.Name" class="control-label col-md-1 msz-required"></label>
+    <div class="col-md-4">
+        <input asp-for="Receiver.Name" class="form-control" />
+        <span asp-validation-for="Receiver.Name" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.Patronymic" class="control-label col-md-3"></label>
+    <div class="col-md-4">
+        <input asp-for="Receiver.Patronymic" class="form-control" />
+        <span asp-validation-for="Receiver.Patronymic" class="field-validation-error"></span>
+    </div>
+    <label asp-for="Receiver.GenderId" class="control-label col-md-1 msz-required"></label>
+    <div class="col-md-4">
+        <select asp-for="Receiver.GenderId" asp-items="@genders" class="form-control">
+            <option></option>
+        </select>
+        <span asp-validation-for="Receiver.GenderId" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+
+    <label asp-for="Receiver.BirthDate" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-4">
+        <div class="input-group date">
+            <input asp-for="Receiver.BirthDate" value="" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+            <div class="input-group-addon msz-show-date-picker-btn">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+        <span asp-validation-for="Receiver.BirthDate" class="field-validation-error"></span>
+    </div>
+
+    <label asp-for="Receiver.Snils" class="control-label col-md-1 msz-required"></label>
+    <div class="col-md-4">
+        <input asp-for="Receiver.Snils" class="form-control msz-snils-field" />
+        <span asp-validation-for="Receiver.Snils" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.Address" class="control-label col-md-3"></label>
+    <div class="col-md-9">
+        <input asp-for="Receiver.Address" class="form-control" />
+        <span asp-validation-for="Receiver.Address" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.Phone" class="control-label col-md-3"></label>
+    <div class="col-md-9">
+        <input asp-for="Receiver.Phone" class="form-control" />
+        <span asp-validation-for="Receiver.Phone" class="field-validation-error"></span>
+    </div>
+</div>
+
+<h3 class="msz-sub-header">Сведения о лицах, являющихся основанием для назначения меры</h3>
+<hr class="msz-sub-header-underline" />
+<div>В разработке</div>
+
+<h3 class="msz-sub-header">Сведения о МСЗ</h3>
+<hr class="msz-sub-header-underline" />
+
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.MszId" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-9">
+        <select asp-for="Receiver.MszId" asp-items="@mszs" class="form-control">
+            <option></option>
+        </select>
+        <span asp-validation-for="Receiver.MszId" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.CategoryId" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-9">
+        <select asp-for="Receiver.CategoryId" asp-items="@categories" class="form-control">
+            <option></option>
+        </select>
+        <span asp-validation-for="Receiver.CategoryId" class="field-validation-error"></span>
+    </div>
+</div>
+
+<h3 class="msz-sub-header">Сведения о назначении</h3>
+<hr class="msz-sub-header-underline" />
+
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.DecisionDate" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-3">
+        <div class="input-group date">
+            <input asp-for="Receiver.DecisionDate" value="" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+            <div class="input-group-addon msz-show-date-picker-btn">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+        <span asp-validation-for="Receiver.DecisionDate" class="field-validation-error"></span>
+    </div>
+    <label asp-for="Receiver.DecisionNumber" class="control-label col-md-2"></label>
+    <div class="col-md-4">
+        <input asp-for="Receiver.DecisionNumber" class="form-control" />
+        <span asp-validation-for="Receiver.DecisionNumber" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.StartDate" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-3">
+        <div class="input-group date">
+            <input asp-for="Receiver.StartDate" asp-format="{0:dd.MM.yyyy}" value="" class="form-control" />
+            <div class="input-group-addon msz-show-date-picker-btn">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+        <span asp-validation-for="Receiver.StartDate" class="field-validation-error"></span>
+    </div>
+    <label asp-for="Receiver.EndDate" class="control-label col-md-2"></label>
+    <div class="col-md-4">
+        <div class="input-group date">
+            <input asp-for="Receiver.EndDate" asp-format="{0:dd.MM.yyyy}" value="" class="form-control" />
+            <div class="input-group-addon msz-show-date-picker-btn">
+                <span class="glyphicon glyphicon-th"></span>
+            </div>
+        </div>
+        <span asp-validation-for="Receiver.EndDate" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.AssigmentFormId" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-9">
+        <select asp-for="Receiver.AssigmentFormId" asp-items="@assigmentForms" class="form-control">
+            <option></option>
+        </select>
+        <span asp-validation-for="Receiver.AssigmentFormId" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.Amount" class="control-label col-md-3 msz-required"></label>
+    <div class="col-md-9">
+        <input asp-for="Receiver.Amount" class="form-control msz-amount-field" />
+        <span asp-validation-for="Receiver.Amount" class="field-validation-error"></span>
+    </div>
+</div>
+<div class="form-group msz-form-group">
+    <label asp-for="Receiver.EquivalentAmount" class="control-label col-md-3"></label>
+    <div class="col-md-9">
+        <input asp-for="Receiver.EquivalentAmount" class="form-control msz-amount-field" />
+        <span asp-validation-for="Receiver.EquivalentAmount" class="field-validation-error"></span>
+    </div>
+</div>

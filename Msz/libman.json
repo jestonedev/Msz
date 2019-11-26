@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap-datepicker@1.9.0",
+      "destination": "wwwroot/lib/bootstrap-datepicker/"
+    },
+    {
+      "library": "globalize@1.4.2",
+      "destination": "wwwroot/lib/globalize/"
+    },
+    {
+      "library": "cldrjs@0.5.1",
+      "destination": "wwwroot/lib/cldrjs/"
+    },
+    {
+      "library": "jquery.inputmask@3.3.4",
+      "destination": "wwwroot/lib/jquery.inputmask/"
+    }
+  ]
+}

@@ -23,6 +23,22 @@ namespace Msz.Services
             _aclService = aclService;
         }
 
+        public ReceiverViewModel GetEmptyViewModel()
+        {
+            return new ReceiverViewModel
+            {
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).ToList(),
+                Genders = _dbContext.Genders.ToList(),
+                AssigmentForms = _dbContext.AssigmentForms.ToList(),
+                Receiver = new Receiver {
+                    Uuid = Guid.NewGuid().ToString(),
+                    CreatedDate = DateTime.Now,
+                    ReasonPersons = new List<ReasonPerson>()
+                }
+            };
+        }
+
         public ReceiverIndexViewModel GetIndexViewModel(ReceiverIndexViewModel viewModel = null)
         {
             var resultViewModel = new ReceiverIndexViewModel

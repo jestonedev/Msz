@@ -1,7 +1,5 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
-body {
-}
 
 .msz-error-alert, .msz-success-alert {
     margin-top: 20px;
@@ -88,13 +86,56 @@ body {
     margin-top: 0;
 }
 
-@media(min-width: 768px) {
+.field-validation-error {
+    color: #b94a48;
+}
 
+input.input-validation-error, select.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+.msz-required {
+    position: relative;
+}
+
+.msz-required:after {
+    content: '*';
+    color: #b94a48;
+    position: absolute;
+    right: 5px;
+}
+
+.msz-sub-header-underline {
+    margin-top: 10px;
+}
+
+.msz-sub-header {
+    margin-top: 30px;
+}
+
+.msz-form-group {
+    margin-bottom: 0;
+}
+
+.msz-edit-btns {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.msz-cancel-btn {
+    margin-left: 5pt;
+}
+
+@media(min-width: 768px) {
 }
 
 @media(min-width: 992px) {
     .msz-cancel-search-btn, .msz-search-btn {
         display: inline-block;
+    }
+
+    .msz-form-group {
+        margin-bottom: 15px;
     }
 
     .msz-search-btn-group {

@@ -11,5 +11,7 @@ namespace Msz.Services
     {
         ReceiverIndexViewModel GetIndexViewModel(ReceiverIndexViewModel viewModel = null);
         bool UpdateMszAndCategories(XDocument xml);
+
+        ReceiverViewModel GetEmptyViewModel();
     }
 }

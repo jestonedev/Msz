@@ -7,7 +7,6 @@ namespace Msz.Services
 {
     public class AclService: IAclService
     {
-        private readonly string _login;
         public AclService()
         {
         }

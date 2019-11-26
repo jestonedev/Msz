@@ -29,6 +29,26 @@ namespace Msz.Controllers
             return View(resultViewModel);
         }
 
+        public IActionResult Create(string returnUrl)
+        {
+            ViewData["returnUrl"] = returnUrl;
+            return View(_receiverService.GetEmptyViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Create(ReceiverViewModel viewModel, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                var newViewModel = _receiverService.GetEmptyViewModel();
+                newViewModel.Receiver = viewModel.Receiver;
+                return View(newViewModel);
+            } else
+            {
+                return RedirectPermanent(returnUrl);
+            }
+        }
+
         [HttpPost]
         public IActionResult UpdateMszAndCategories(string returnUrl, IFormFile xml)
         {
