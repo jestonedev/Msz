@@ -15,9 +15,12 @@ namespace Msz.Models
         public string Name { get; set; }
         [Required]
         public string Guid { get; set; }
+        public string PreviousGuid { get; set; }
         public List<Category> Categories { get; set; }
         public int? PreviousRevisionId { get; set; }
         public int? NextRevisionId { get; set; }
         public DateTime CreatedDate { get; set; }
+        [Required]
+        public string Creator { get; set; }
     }
 }

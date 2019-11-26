@@ -14,5 +14,7 @@ namespace Msz.DatabaseContext
         DbSet<Gender> Genders { get; set; }
         DbSet<AssigmentForm> AssigmentForms { get; set; }
         DbSet<Receiver> Receivers { get; set; }
+
+        int SaveChanges();
     }
 }

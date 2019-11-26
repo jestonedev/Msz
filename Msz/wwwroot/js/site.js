@@ -12,4 +12,8 @@ $(document).ready(function () {
     $(".msz-pagination li.disabled a").on("click", function (e) {
         e.preventDefault();
     });
+
+    $(".msz-tool-panel .btn.disabled, .msz-tool-panel .ms-disabled").on("click", function (e) {
+        e.preventDefault();
+    });
 });

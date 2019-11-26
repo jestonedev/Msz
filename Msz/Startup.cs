@@ -34,9 +34,12 @@ namespace Msz
             });
 
             string connection = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddHttpContextAccessor();
             services.AddDbContext<MszDbContext>(options => options.UseSqlServer(connection, builder => builder.UseRowNumberForPaging()));
             services.AddTransient<IMszDbContext, MszDbContext>();
             services.AddTransient<IReceiverService, ReceiverService>();
+            services.AddTransient<IAclService, AclService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -55,6 +58,9 @@ namespace Msz
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            Helpers.AppContext.Configure(app.ApplicationServices
+                      .GetRequiredService<IHttpContextAccessor>());
 
             app.UseMvc(routes =>
             {

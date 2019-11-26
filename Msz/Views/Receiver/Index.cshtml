@@ -13,16 +13,26 @@
         {
             filtered = true;
         }
-        props.Add("FilterOptions."+property.Name, property.GetValue(Model.FilterOptions).ToString());
+        props.Add("FilterOptions." + property.Name, property.GetValue(Model.FilterOptions).ToString());
     }
 }
 
+<h2>Получатели мер социальной поддержки</h2>
+@if (TempData.ContainsKey("Error"))
+{
+    <div class="alert alert-danger msz-error-alert" role="alert">@TempData["Error"]</div>
+}
+
+@if (TempData.ContainsKey("Success"))
+{
+    <div class="alert alert-success msz-success-alert" role="alert">@TempData["Success"]</div>
+}
 <div class="msz-tool-panel">
-    <div class="col-sm-3 col-xs-12 msz-left-tool-group">
+    <div class="col-xs-12 msz-tool-group">
         <div class="row">
             <div class="btn-group msz-egisso-btn-group">
                 <button type="button" class="btn btn-success dropdown-toggle msz-egisso-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    ЕГИССО <span class="caret"></span>
+                    <span class="msz-glyphicon glyphicon glyphicon-briefcase" aria-hidden="true"></span> ЕГИССО <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
                     <li>
@@ -33,25 +43,30 @@
                     </li>
                     <li>
                         <form asp-action="UpdateMszAndCategories" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="returnUrl" value="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}")" />
                             <input type="file" id="msz-category-file-btn" name="xml" href="#">
                             <label for="msz-category-file-btn">Обновить категории и МСЗ</label>
                         </form>
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xs-12 msz-center-tool-group">
-        <div class="row">
-            <button type="button" class="btn btn-success msz-search-btn">Поиск</button>
-            <!--
-            -->
-            <a asp-action="Index" class="btn btn-success msz-cancel-search-btn @(filtered ? "active" : "")">Отменить поиск</a>
-        </div>
-    </div>
-    <div class="col-sm-3 col-xs-12 msz-right-tool-group">
-        <div class="row">
-            <a asp-action="Add" class="btn btn-success msz-add-receiver-btn">Добавить получателя</a>
+            <div class="btn-group msz-search-btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle msz-search-toggle-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="msz-glyphicon glyphicon glyphicon-search" aria-hidden="true"></span> Фильтрация <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#" class="msz-dd-search-btn @(filtered ? "msz-active" : "")">Применить фильтр</a>
+                    </li>
+                    <li>
+                        <a asp-action="Index" class="msz-dd-cancel-search-btn @(filtered ? "" : "msz-disabled")">Отменить фильтр</a>
+                    </li>
+                </ul>
+            </div>
+
+            <a href="#" class="btn btn-success msz-search-btn @(filtered ? "active" : "")"><span class="msz-glyphicon glyphicon glyphicon-search" aria-hidden="true"></span> Применить фильтр</a>
+            <a asp-action="Index" class="btn btn-success msz-cancel-search-btn @(filtered ? "" : "disabled")"><span class="msz-glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span> Отменить фильтр</a>
+            <a asp-action="Add" class="btn btn-success msz-add-receiver-btn"><span class="msz-glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить получателя</a>
         </div>
     </div>
 </div>
@@ -84,7 +99,7 @@
                         <td>@receiver.Msz.Name</td>
                         <td>@receiver.Category.Name</td>
                         <td>@(receiver.DecisionNumber != null ? receiver.DecisionNumber : "б/н") от @receiver.DecisionDate.ToString("dd.MM.yyyy")</td>
-                        <td>c @receiver.StartDate.ToString("dd.MM.yyyy")@(@receiver.EndDate != null ? " по "+ receiver.EndDate?.ToString("dd.MM.yyyy") : "")</td>
+                        <td>c @receiver.StartDate.ToString("dd.MM.yyyy")@(@receiver.EndDate != null ? " по " + receiver.EndDate?.ToString("dd.MM.yyyy") : "")</td>
                     </tr>
                 }
             }
@@ -125,7 +140,7 @@
         @for (var i = startIndex; i <= endIndex; i++)
         {
             <li class="@(Model.PageOptions.PageIndex == i ? "active" : "")">
-                <a asp-all-route-data="@props" asp-route-PageOptions.PageIndex="@i">@(i+1)</a>
+                <a asp-all-route-data="@props" asp-route-PageOptions.PageIndex="@i">@(i + 1)</a>
             </li>
         }
         <li class="@(Model.PageOptions.PageIndex >= Model.PageOptions.PageCount - 1 ? "disabled" : "")">
