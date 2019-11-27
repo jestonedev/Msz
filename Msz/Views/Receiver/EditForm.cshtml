@@ -72,9 +72,56 @@
     </div>
 </div>
 
-<h3 class="msz-sub-header">Сведения о лицах, являющихся основанием для назначения меры</h3>
+<h3 class="msz-sub-header">
+    <button class="btn btn-success msz-add-reason-person-btn pull-right">Добавить</button>
+    <span class="msz-reason-person-sub-header-text col-md-10 col-xs-9">Сведения о лицах, являющихся основанием для назначения меры</span></h3>
 <hr class="msz-sub-header-underline" />
-<div>В разработке</div>
+
+<div class="msz-reason-persons-table-wrapper table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Дата рождения</th>
+                <th>СНИЛС</th>
+                <th>Пол</th>
+                <th class="msz-reason-persons-table-control"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Receiver.ReasonPersons.Any())
+            {
+                @foreach (var reasonPerson in Model.Receiver.ReasonPersons)
+                {
+                    <tr>
+                        <td>@reasonPerson.Surname @reasonPerson.Name@(reasonPerson.Patronymic != null ? " " + reasonPerson.Patronymic : "")</td>
+                        <td>@reasonPerson.BirthDate.ToString("dd.MM.yyyy")</td>
+                        <td>@reasonPerson.Snils</td>
+                        <td>@reasonPerson.Gender.Name</td>
+                        <td></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="msz-reason-persons-table-empty">Сведения отсутствуют</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="msz-reason-persons-modal-wrapper">
+    @if (Model.Receiver.ReasonPersons.Any())
+    {
+        @for (var i = 0; i < Model.Receiver.ReasonPersons.Count; i++)
+        {
+            var data = new ViewDataDictionary(ViewData) { { "index", i } };
+                <partial name="ReasonPerson" model="@Model" view-data="@data"/>
+        }
+    }
+</div>
 
 <h3 class="msz-sub-header">Сведения о МСЗ</h3>
 <hr class="msz-sub-header-underline" />

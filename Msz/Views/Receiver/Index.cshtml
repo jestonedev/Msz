@@ -101,6 +101,7 @@
                         <td>@receiver.Category.Name</td>
                         <td>@(receiver.DecisionNumber != null ? receiver.DecisionNumber : "б/н") от @receiver.DecisionDate.ToString("dd.MM.yyyy")</td>
                         <td>c @receiver.StartDate.ToString("dd.MM.yyyy")@(@receiver.EndDate != null ? " по " + receiver.EndDate?.ToString("dd.MM.yyyy") : "")</td>
+                        <td></td>
                     </tr>
                 }
             }

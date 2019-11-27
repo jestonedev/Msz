@@ -1,0 +1,69 @@
+﻿@using Msz.ViewModels;
+@model ReceiverViewModel
+
+@{ 
+    Layout = null;
+    var index = ViewData.ContainsKey("index") ? (int)ViewData["index"] : 0;
+    var genders = new SelectList(Model.Genders, "Id", "Name");
+}
+
+<div class="modal fade" id="mszReasonPersonsModal@(index)" tabindex="-1" role="dialog" aria-labelledby="mszReasonPersonsModal@(index)Title">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                <h4 class="modal-title" id="mszReasonPersonsModal@(index)Title">Добавить сведения о новом лице, являющемся основанием для назначения меры</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group msz-form-group">
+                    <label asp-for="Receiver.ReasonPersons[index].Surname" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <input asp-for="Receiver.ReasonPersons[index].Surname" class="form-control" />
+                        <span asp-validation-for="Receiver.ReasonPersons[index].Surname" class="field-validation-error"></span>
+                    </div>
+                    <label asp-for="Receiver.ReasonPersons[index].Name" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <input asp-for="Receiver.ReasonPersons[index].Name" class="form-control" />
+                        <span asp-validation-for="Receiver.ReasonPersons[index].Name" class="field-validation-error"></span>
+                    </div>
+                </div>
+                <div class="form-group msz-form-group">
+                    <label asp-for="Receiver.ReasonPersons[index].Patronymic" class="control-label col-md-2"></label>
+                    <div class="col-md-4">
+                        <input asp-for="Receiver.ReasonPersons[index].Patronymic" class="form-control" />
+                        <span asp-validation-for="Receiver.ReasonPersons[index].Patronymic" class="field-validation-error"></span>
+                    </div>
+                    <label asp-for="Receiver.ReasonPersons[index].GenderId" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <select asp-for="Receiver.ReasonPersons[index].GenderId" asp-items="@genders" class="form-control">
+                            <option></option>
+                        </select>
+                        <span asp-validation-for="Receiver.ReasonPersons[index].GenderId" class="field-validation-error"></span>
+                    </div>
+                </div>
+                <div class="form-group msz-form-group">
+                    <label asp-for="Receiver.ReasonPersons[index].BirthDate" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <div class="input-group date">
+                            <input asp-for="Receiver.ReasonPersons[index].BirthDate" value="" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                            <div class="input-group-addon msz-show-date-picker-btn">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Receiver.ReasonPersons[index].BirthDate" class="field-validation-error"></span>
+                    </div>
+
+                    <label asp-for="Receiver.ReasonPersons[index].Snils" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <input asp-for="Receiver.ReasonPersons[index].Snils" class="form-control msz-snils-field" />
+                        <span asp-validation-for="Receiver.ReasonPersons[index].Snils" class="field-validation-error"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                <button type="button" class="btn btn-primary msz-save-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>

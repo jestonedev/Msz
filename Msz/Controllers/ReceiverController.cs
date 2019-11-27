@@ -42,6 +42,8 @@ namespace Msz.Controllers
             {
                 var newViewModel = _receiverService.GetEmptyViewModel();
                 newViewModel.Receiver = viewModel.Receiver;
+                if (newViewModel.Receiver.ReasonPersons == null)
+                    newViewModel.Receiver.ReasonPersons = new List<ReasonPerson>();
                 return View(newViewModel);
             } else
             {
@@ -71,6 +73,14 @@ namespace Msz.Controllers
                 TempData["Success"] = "МСЗ и категории успешно загружены";
             }
             return RedirectPermanent(returnUrl);
+        }
+
+        public IActionResult GetEmptyReasonPerson()
+        {
+            var emptyViewModel = _receiverService.GetEmptyViewModel();
+            emptyViewModel.Receiver.ReasonPersons.Add(new ReasonPerson { });
+            ViewData["index"] = 0;
+            return View("ReasonPerson", emptyViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

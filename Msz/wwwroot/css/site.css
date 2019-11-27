@@ -65,20 +65,25 @@ for details on configuring this project to bundle and minify static web assets. 
     cursor: pointer;
 }
 
-.msz-receiver-table-wrapper {
+.msz-receiver-table-wrapper, .msz-reason-persons-table-wrapper {
     margin-top: 20px;
 }
 
-.msz-receiver-table-wrapper table.table td, .msz-receiver-table-wrapper table.table th {
+.msz-receiver-table-wrapper table.table td, .msz-receiver-table-wrapper table.table th,
+.msz-reason-persons-table-wrapper table.table td, .msz-reason-persons-table-wrapper table.table th {
     text-align: center;
     vertical-align: middle;
 }
 
-.msz-receiver-table-control {
+.msz-reason-persons-table-wrapper  table {
+    margin-bottom: 0;
+}
+
+.msz-receiver-table-control, .msz-reason-persons-table-control {
     width: 100px;
 }
 
-.msz-receiver-table-empty {
+.msz-receiver-table-empty, .msz-reason-persons-table-empty {
     font-style: italic;
 }
 
@@ -111,6 +116,19 @@ input.input-validation-error, select.input-validation-error {
 
 .msz-sub-header {
     margin-top: 30px;
+    position: relative;
+}
+
+.msz-add-reason-person-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.msz-reason-person-sub-header-text {
+    display: block;
+    padding: 0;
+    float: none;
 }
 
 .msz-form-group {
