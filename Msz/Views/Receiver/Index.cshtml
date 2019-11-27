@@ -76,10 +76,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Дата последнего изменения</th>
-                <th>ФИО получателя</th>
-                <th>Дата рождения получателя</th>
-                <th>СНИЛС получателя</th>
+                <th>Получатель</th>
                 <th>МСЗ</th>
                 <th>Категория</th>
                 <th>Решение</th>
@@ -93,22 +90,28 @@
                 @foreach (var receiver in Model.Receivers)
                 {
                     <tr>
-                        <td>@receiver.CreatedDate.ToString("dd.MM.yyyy hh:mm:ss")</td>
-                        <td>@receiver.Surname @receiver.Name@(receiver.Patronymic != null ? " " + receiver.Patronymic : "")</td>
-                        <td>@receiver.BirthDate.ToString("dd.MM.yyyy")</td>
-                        <td>@receiver.Snils</td>
+                        <td class="msz-receiver-cell">
+                            <div class="msz-receiver-snp">@receiver.Surname @receiver.Name@(receiver.Patronymic != null ? " " + receiver.Patronymic : "")</div>
+                            <div class="msz-receiver-birthdate">Дата рождения: @receiver.BirthDate.ToString("dd.MM.yyyy")</div>
+                            <div class="msz-receiver-snils">СНИЛС: @receiver.Snils</div>
+                        </td>
                         <td>@receiver.Msz.Name</td>
                         <td>@receiver.Category.Name</td>
                         <td>@(receiver.DecisionNumber != null ? receiver.DecisionNumber : "б/н") от @receiver.DecisionDate.ToString("dd.MM.yyyy")</td>
-                        <td>c @receiver.StartDate.ToString("dd.MM.yyyy")@(@receiver.EndDate != null ? " по " + receiver.EndDate?.ToString("dd.MM.yyyy") : "")</td>
-                        <td></td>
+                        <td><div>c @receiver.StartDate.ToString("dd.MM.yyyy")</div>@(@receiver.EndDate != null ? Html.Raw("<div>по " + receiver.EndDate?.ToString("dd.MM.yyyy")+"</div>") : Html.Raw(""))</td>
+                        <td>
+                            <div class='btn-group' role='group'>
+                                <a asp-action="Update" asp-route-id="@receiver.Id" asp-route-returnUrl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}")" class='btn btn-success'><span class='msz-glyphicon-only glyphicon glyphicon-pencil' aria-hidden='true'></span></a>
+                                <button data-id="@receiver.Id" class='btn btn-danger msz-receiver-delete-btn'><span class='msz-glyphicon-only glyphicon glyphicon-remove' aria-hidden='true'></span></button>
+                            </div>
+                        </td>
                     </tr>
                 }
             }
             else
             {
                 <tr>
-                    <td colspan="9" class="msz-receiver-table-empty">Получатели отсутствуют</td>
+                    <td colspan="6" class="msz-receiver-table-empty">Получатели отсутствуют</td>
                 </tr>
             }
 

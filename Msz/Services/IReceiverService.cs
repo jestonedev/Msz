@@ -1,4 +1,5 @@
-﻿using Msz.ViewModels;
+﻿using Msz.Models;
+using Msz.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,9 @@ namespace Msz.Services
         bool UpdateMszAndCategories(XDocument xml);
 
         ReceiverViewModel GetEmptyViewModel();
+        ReceiverViewModel GetViewModel(int receiverId);
+        void Insert(Receiver receiver);
+        void Update(Receiver receiver);
+        void Delete(int receiverId);
     }
 }

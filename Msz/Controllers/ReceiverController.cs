@@ -17,10 +17,12 @@ namespace Msz.Controllers
     public class ReceiverController : Controller
     {
         private readonly IReceiverService _receiverService;
+        private readonly IAclService _aclService;
 
-        public ReceiverController(IReceiverService receiverService)
+        public ReceiverController(IReceiverService receiverService, IAclService aclService)
         {
             _receiverService = receiverService;
+            _aclService = aclService;
         }
 
         public IActionResult Index(ReceiverIndexViewModel viewModel = null)
@@ -47,6 +49,37 @@ namespace Msz.Controllers
                 return View(newViewModel);
             } else
             {
+                _receiverService.Insert(viewModel.Receiver);
+                return RedirectPermanent(returnUrl);
+            }
+        }
+
+        public IActionResult Update(string returnUrl, int id)
+        {
+            ViewData["returnUrl"] = returnUrl;
+            ViewData["aclService"] = _aclService;
+            var viewModel = _receiverService.GetViewModel(id);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Update(ReceiverViewModel viewModel, string returnUrl)
+        {
+            if (!ModelState.IsValid)
+            {
+                var newViewModel = _receiverService.GetEmptyViewModel();
+                newViewModel.Receiver = viewModel.Receiver;
+                if (newViewModel.Receiver.ReasonPersons == null)
+                    newViewModel.Receiver.ReasonPersons = new List<ReasonPerson>();
+                return View(newViewModel);
+            }
+            else
+            {
+                if (!_aclService.CanUpdate(viewModel.Receiver))
+                {
+                    return Forbid();
+                }
+                _receiverService.Update(viewModel.Receiver);
                 return RedirectPermanent(returnUrl);
             }
         }

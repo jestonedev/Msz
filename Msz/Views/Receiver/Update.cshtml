@@ -1,0 +1,38 @@
+﻿@using Msz.ViewModels;
+@using Msz.Services;
+@model ReceiverViewModel
+
+@{
+    ViewData["Title"] = "Реестр получателей МСЗ";
+
+    var _aclService = (IAclService)ViewData["aclService"];
+
+}
+
+<h2>
+    Получатель «@Model.Receiver.Surname @Model.Receiver.Name@(Model.Receiver.Patronymic != null ? " " + Model.Receiver.Patronymic : "")»
+</h2>
+
+<div>
+    Ревизия от @Model.Receiver.CreatedDate.ToString("dd.MM.yyyy HH:mm:ss")
+    <div class="btn-group msz-revision-nav-btn-group" role="group">
+        <a asp-action="Update" asp-route-id="@Model.Receiver.PrevRevisionId" asp-route-returnUrl="@(ViewData["returnUrl"])"  class="btn btn-default @(Model.Receiver.PrevRevisionId != null ? "" : "disabled")">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+        <a asp-action="Update" asp-route-id="@Model.Receiver.NextRevisionId" asp-route-returnUrl="@(ViewData["returnUrl"])" class="btn btn-default @(Model.Receiver.NextRevisionId != null ? "" : "disabled")">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+
+<form class="form-horizontal" asp-action="Update" method="post">
+    <input type="hidden" asp-for="Receiver.Id" />
+    <partial name="EditForm" /> 
+    <div class="text-center msz-edit-btns">
+        @if (_aclService.CanUpdate(Model.Receiver))
+        {
+            <input type="submit" class="btn btn-success msx-submit-btn" value="Сохранить" />
+        }
+        <a class="btn btn-success @(_aclService.CanUpdate(Model.Receiver) ? "msz-cancel-btn" : "")" href="@(ViewData["returnUrl"])">Отменить</a>
+    </div>
+</form>

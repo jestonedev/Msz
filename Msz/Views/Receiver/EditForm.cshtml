@@ -1,80 +1,148 @@
 ﻿@using Msz.ViewModels;
+@using Msz.Services;
 @model ReceiverViewModel
 
 @{
     var genders = new SelectList(Model.Genders, "Id", "Name");
     var mszs = new SelectList(Model.Mszs, "Id", "Name");
-    var categories = new SelectList(Model.Categories, "Id", "Name");
     var assigmentForms = new SelectList(Model.AssigmentForms, "Id", "Name");
+    IAclService _aclService = null;
+    if (ViewData.ContainsKey("aclService"))
+    {
+        _aclService = (IAclService)ViewData["aclService"];
+    }
+    var editableFields = Model.Receiver.Id == 0 || (_aclService != null && _aclService.CanUpdate(Model.Receiver));
 }
 
 <input type="hidden" name="returnUrl" value="@ViewData["returnUrl"]" />
-<input type="hidden" asp-for="Receiver.Uuid"/>
+<input type="hidden" asp-for="Receiver.Uuid" />
+<input type="hidden" asp-for="Receiver.Creator" />
+<input type="hidden" asp-for="Receiver.CreatedDate" />
 <h3 class="msz-sub-header">Сведения о получателе</h3>
 <hr class="msz-sub-header-underline" />
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.Surname" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-4">
-        <input asp-for="Receiver.Surname" class="form-control" />
-        <span asp-validation-for="Receiver.Surname" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Surname" class="form-control" />
+            <span asp-validation-for="Receiver.Surname" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Surname" class="form-control" readonly />
+        }
     </div>
     <label asp-for="Receiver.Name" class="control-label col-md-1 msz-required"></label>
     <div class="col-md-4">
-        <input asp-for="Receiver.Name" class="form-control" />
-        <span asp-validation-for="Receiver.Name" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Name" class="form-control" />
+            <span asp-validation-for="Receiver.Name" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Name" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.Patronymic" class="control-label col-md-3"></label>
     <div class="col-md-4">
-        <input asp-for="Receiver.Patronymic" class="form-control" />
-        <span asp-validation-for="Receiver.Patronymic" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Patronymic" class="form-control" />
+            <span asp-validation-for="Receiver.Patronymic" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Patronymic" class="form-control" readonly />
+        }
     </div>
     <label asp-for="Receiver.GenderId" class="control-label col-md-1 msz-required"></label>
     <div class="col-md-4">
-        <select asp-for="Receiver.GenderId" asp-items="@genders" class="form-control">
-            <option></option>
-        </select>
-        <span asp-validation-for="Receiver.GenderId" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <select asp-for="Receiver.GenderId" asp-items="@genders" class="form-control">
+                <option></option>
+            </select>
+            <span asp-validation-for="Receiver.GenderId" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Gender.Name" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
 
     <label asp-for="Receiver.BirthDate" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-4">
-        <div class="input-group date">
-            <input asp-for="Receiver.BirthDate" value="" asp-format="{0:dd.MM.yyyy}" class="form-control" />
-            <div class="input-group-addon msz-show-date-picker-btn">
-                <span class="glyphicon glyphicon-th"></span>
+        @if (editableFields)
+        {
+            <div class="input-group date">
+                <input asp-for="Receiver.BirthDate" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <div class="input-group-addon msz-show-date-picker-btn">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
             </div>
-        </div>
-        <span asp-validation-for="Receiver.BirthDate" class="field-validation-error"></span>
+            <span asp-validation-for="Receiver.BirthDate" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.BirthDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+        }
     </div>
 
     <label asp-for="Receiver.Snils" class="control-label col-md-1 msz-required"></label>
     <div class="col-md-4">
-        <input asp-for="Receiver.Snils" class="form-control msz-snils-field" />
-        <span asp-validation-for="Receiver.Snils" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Snils" class="form-control msz-snils-field" />
+            <span asp-validation-for="Receiver.Snils" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Snils" class="form-control msz-snils-field" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.Address" class="control-label col-md-3"></label>
     <div class="col-md-9">
-        <input asp-for="Receiver.Address" class="form-control" />
-        <span asp-validation-for="Receiver.Address" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Address" class="form-control" />
+            <span asp-validation-for="Receiver.Address" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Address" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.Phone" class="control-label col-md-3"></label>
     <div class="col-md-9">
-        <input asp-for="Receiver.Phone" class="form-control" />
-        <span asp-validation-for="Receiver.Phone" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Phone" class="form-control" />
+            <span asp-validation-for="Receiver.Phone" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Phone" class="form-control" readonly />
+        }
     </div>
 </div>
 
 <h3 class="msz-sub-header">
-    <button class="btn btn-success msz-add-reason-person-btn pull-right">Добавить</button>
-    <span class="msz-reason-person-sub-header-text col-md-10 col-xs-9">Сведения о лицах, являющихся основанием для назначения меры</span></h3>
+    @if (editableFields)
+    {
+        <button class="btn btn-success msz-add-reason-person-btn pull-right">Добавить</button>
+    }
+    <span class="msz-reason-person-sub-header-text col-md-10 col-xs-9">Сведения о лицах, являющихся основанием для назначения меры</span>
+</h3>
 <hr class="msz-sub-header-underline" />
 
 <div class="msz-reason-persons-table-wrapper table-responsive">
@@ -85,7 +153,10 @@
                 <th>Дата рождения</th>
                 <th>СНИЛС</th>
                 <th>Пол</th>
-                <th class="msz-reason-persons-table-control"></th>
+                @if (editableFields)
+                {
+                    <th class="msz-reason-persons-table-control"></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -98,7 +169,15 @@
                         <td>@reasonPerson.BirthDate.ToString("dd.MM.yyyy")</td>
                         <td>@reasonPerson.Snils</td>
                         <td>@reasonPerson.Gender.Name</td>
-                        <td></td>
+                        @if (editableFields)
+                        {
+                            <td>
+                                <div class='btn-group' role='group'>
+                                    <button class='btn btn-success msz-reason-person-edit-btn'><span class='msz-glyphicon-only glyphicon glyphicon-pencil' aria-hidden='true'></span></button>
+                                    <button class='btn btn-danger msz-reason-person-delete-btn'><span class='msz-glyphicon-only glyphicon glyphicon-remove' aria-hidden='true'></span></button>
+                                </div>
+                            </td>
+                        }
                     </tr>
                 }
             }
@@ -118,7 +197,7 @@
         @for (var i = 0; i < Model.Receiver.ReasonPersons.Count; i++)
         {
             var data = new ViewDataDictionary(ViewData) { { "index", i } };
-                <partial name="ReasonPerson" model="@Model" view-data="@data"/>
+            <partial name="ReasonPerson" model="@Model" view-data="@data" />
         }
     }
 </div>
@@ -129,19 +208,37 @@
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.MszId" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-9">
-        <select asp-for="Receiver.MszId" asp-items="@mszs" class="form-control">
-            <option></option>
-        </select>
-        <span asp-validation-for="Receiver.MszId" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <select asp-for="Receiver.MszId" asp-items="@mszs" class="form-control">
+                <option></option>
+            </select>
+            <span asp-validation-for="Receiver.MszId" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Msz.Name" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.CategoryId" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-9">
-        <select asp-for="Receiver.CategoryId" asp-items="@categories" class="form-control">
-            <option></option>
-        </select>
-        <span asp-validation-for="Receiver.CategoryId" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <select asp-for="Receiver.CategoryId" class="form-control">
+                <option></option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option data-msz-id="@category.Msz.Id" value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <span asp-validation-for="Receiver.CategoryId" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Category.Name" class="form-control" readonly />
+        }
     </div>
 </div>
 
@@ -151,62 +248,114 @@
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.DecisionDate" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-3">
-        <div class="input-group date">
-            <input asp-for="Receiver.DecisionDate" value="" asp-format="{0:dd.MM.yyyy}" class="form-control" />
-            <div class="input-group-addon msz-show-date-picker-btn">
-                <span class="glyphicon glyphicon-th"></span>
+        @if (editableFields)
+        {
+            <div class="input-group date">
+                <input asp-for="Receiver.DecisionDate" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <div class="input-group-addon msz-show-date-picker-btn">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
             </div>
-        </div>
-        <span asp-validation-for="Receiver.DecisionDate" class="field-validation-error"></span>
+            <span asp-validation-for="Receiver.DecisionDate" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.DecisionDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+        }
     </div>
     <label asp-for="Receiver.DecisionNumber" class="control-label col-md-2"></label>
     <div class="col-md-4">
-        <input asp-for="Receiver.DecisionNumber" class="form-control" />
-        <span asp-validation-for="Receiver.DecisionNumber" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.DecisionNumber" class="form-control" />
+            <span asp-validation-for="Receiver.DecisionNumber" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.DecisionNumber" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.StartDate" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-3">
-        <div class="input-group date">
-            <input asp-for="Receiver.StartDate" asp-format="{0:dd.MM.yyyy}" value="" class="form-control" />
-            <div class="input-group-addon msz-show-date-picker-btn">
-                <span class="glyphicon glyphicon-th"></span>
+        @if (editableFields)
+        {
+            <div class="input-group date">
+                <input asp-for="Receiver.StartDate" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <div class="input-group-addon msz-show-date-picker-btn">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
             </div>
-        </div>
-        <span asp-validation-for="Receiver.StartDate" class="field-validation-error"></span>
+            <span asp-validation-for="Receiver.StartDate" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.StartDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+        }
     </div>
     <label asp-for="Receiver.EndDate" class="control-label col-md-2"></label>
     <div class="col-md-4">
-        <div class="input-group date">
-            <input asp-for="Receiver.EndDate" asp-format="{0:dd.MM.yyyy}" value="" class="form-control" />
-            <div class="input-group-addon msz-show-date-picker-btn">
-                <span class="glyphicon glyphicon-th"></span>
+        @if (editableFields)
+        {
+            <div class="input-group date">
+                <input asp-for="Receiver.EndDate" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <div class="input-group-addon msz-show-date-picker-btn">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
             </div>
-        </div>
-        <span asp-validation-for="Receiver.EndDate" class="field-validation-error"></span>
+            <span asp-validation-for="Receiver.EndDate" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.EndDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.AssigmentFormId" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-9">
-        <select asp-for="Receiver.AssigmentFormId" asp-items="@assigmentForms" class="form-control">
-            <option></option>
-        </select>
-        <span asp-validation-for="Receiver.AssigmentFormId" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <select asp-for="Receiver.AssigmentFormId" asp-items="@assigmentForms" class="form-control">
+                <option></option>
+            </select>
+            <span asp-validation-for="Receiver.AssigmentFormId" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.AssigmentForm.Name" class="form-control" readonly />
+        }
     </div>
 </div>
 <div class="form-group msz-form-group">
     <label asp-for="Receiver.Amount" class="control-label col-md-3 msz-required"></label>
     <div class="col-md-9">
-        <input asp-for="Receiver.Amount" class="form-control msz-amount-field" />
-        <span asp-validation-for="Receiver.Amount" class="field-validation-error"></span>
+        @if (editableFields)
+        {
+            <input asp-for="Receiver.Amount" class="form-control msz-amount-field" />
+            <span asp-validation-for="Receiver.Amount" class="field-validation-error"></span>
+        }
+        else
+        {
+            <input asp-for="Receiver.Amount" class="form-control msz-amount-field" readonly />
+        }
     </div>
 </div>
-<div class="form-group msz-form-group">
-    <label asp-for="Receiver.EquivalentAmount" class="control-label col-md-3"></label>
-    <div class="col-md-9">
-        <input asp-for="Receiver.EquivalentAmount" class="form-control msz-amount-field" />
-        <span asp-validation-for="Receiver.EquivalentAmount" class="field-validation-error"></span>
+@if (editableFields || Model.Receiver.AssigmentFormId == 3)
+{
+    <div class="form-group msz-form-group">
+        <label asp-for="Receiver.EquivalentAmount" class="control-label col-md-3"></label>
+        <div class="col-md-9">
+            @if (editableFields)
+            {
+                <input asp-for="Receiver.EquivalentAmount" class="form-control msz-amount-field" />
+                <span asp-validation-for="Receiver.EquivalentAmount" class="field-validation-error"></span>
+            }
+            else
+            {
+                <input asp-for="Receiver.EquivalentAmount" class="form-control msz-amount-field" readonly/>
+            }
+        </div>
     </div>
-</div>
+}

@@ -35,6 +35,9 @@ if ($.validator !== undefined) {
 
 $(document).ready(function () {
     $(".date input").datepicker(datePickerOptions);
+    $(".date input").each(function (idx, elem) {
+        if ($(elem).val() === "01.01.0001") $(elem).val('');
+    });
 
     $(".msz-snils-field").inputmask("999-999-999-99");
 
@@ -72,6 +75,10 @@ $(document).ready(function () {
         if ($(this).data("valid") === undefined) {
             $(this).data("valid", "invalid");
         }
+        $(this).find(".date input").each(function (idx, elem) {
+            if ($(elem).val() === "01.01.0001") $(elem).val('');
+        });
+
         $(this).data("surname", $(this).find("input[id$='__Surname']").val());
         $(this).data("name", $(this).find("input[id$='__Name']").val());
         $(this).data("patronymic", $(this).find("input[id$='__Patronymic']").val());
@@ -135,43 +142,56 @@ $(document).ready(function () {
                 e.preventDefault();
             }
         });
-        modal.find(".msz-save-btn").on('click', function () {
-            $("form").valid();
-            $("form").find("input, select").each(function (idx, elem) {
-                if ($(elem).closest('.modal').length === 0) {
-                    $(elem).removeClass('input-validation-error');
-                }
-            });
-            $('span.field-validation-error').each(function(idx, elem) {
-                var input = $(elem).closest('div').find('input'); 
-                if(!input.hasClass('input-validation-error'))
-                {
-                    $(elem).text('');
-                }
-            });
-
-            var invalidInputs = modal.find(".input-validation-error");
-            if (invalidInputs.length === 0) {
-                modal.data("valid", "valid");
-                modal.data("surname", modal.find("input[id$='__Surname']").val());
-                modal.data("name", modal.find("input[id$='__Name']").val());
-                modal.data("patronymic", modal.find("input[id$='__Patronymic']").val());
-                modal.data("gender_id", modal.find("select[id$='__GenderId']").val());
-                modal.data("birth_date", modal.find("input[id$='__BirthDate']").val());
-                modal.data("snils", modal.find("input[id$='__Snils']").val());
-                modal.modal('hide');
-            }
-        });
         modal.modal('show');
     }
 
-    $("body").on('click', '.msz-reason-person-edit-btn', function () {
+    $(".modal").on('show.bs.modal', showReasonPersonModal);
+    $(".modal").on('hidden.bs.modal', hideReasonPersonModal);
+    $(".modal").keypress(function (e) {
+        if (e.keyCode === 13) {
+            modal.find(".msz-save-btn").click();
+            e.preventDefault();
+        }
+    });
+    $(".modal").data('valid', 'valid');
+
+    $('body').on('click', '.msz-save-btn', function () {
+        var modal = $(this).closest(".modal");
+        $("form").valid();
+        $("form").find("input, select").each(function (idx, elem) {
+            if ($(elem).closest('.modal').length === 0) {
+                $(elem).removeClass('input-validation-error');
+            }
+        });
+        $('span.field-validation-error').each(function (idx, elem) {
+            var input = $(elem).closest('div').find('input');
+            if (!input.hasClass('input-validation-error')) {
+                $(elem).text('');
+            }
+        });
+
+        var invalidInputs = modal.find(".input-validation-error");
+        if (invalidInputs.length === 0) {
+            modal.data("valid", "valid");
+            modal.data("surname", modal.find("input[id$='__Surname']").val());
+            modal.data("name", modal.find("input[id$='__Name']").val());
+            modal.data("patronymic", modal.find("input[id$='__Patronymic']").val());
+            modal.data("gender_id", modal.find("select[id$='__GenderId']").val());
+            modal.data("birth_date", modal.find("input[id$='__BirthDate']").val());
+            modal.data("snils", modal.find("input[id$='__Snils']").val());
+            modal.modal('hide');
+        }
+    });
+
+
+    $("body").on('click', '.msz-reason-person-edit-btn', function (e) {
         var index = $(this).closest('tr').index();
         var modal = $(".msz-reason-persons-modal-wrapper .modal")[index];
         $(modal).modal('show');
+        e.preventDefault();
     });
 
-    $("body").on('click', '.msz-reason-person-delete-btn', function () {
+    $("body").on('click', '.msz-reason-person-delete-btn', function (e) {
         var tbody = $(this).closest('tbody');
         var index = $(this).closest('tr').index();
         var modal = $(".msz-reason-persons-modal-wrapper .modal")[index];
@@ -181,6 +201,7 @@ $(document).ready(function () {
         if (tbody.find('tr').length === 0) {
             tbody.append("<tr><td colspan='5' class='msz-reason-persons-table-empty'>Сведения отсутствуют</td></tr>");
         }
+        e.preventDefault();
     });
 
     function updateValidation() {
@@ -244,4 +265,18 @@ $(document).ready(function () {
     });
 
     $("#Receiver_AssigmentFormId").change();
+
+    var categoryOptions = $("#Receiver_CategoryId option[value]").clone(true);
+    $("#Receiver_CategoryId option[value]").remove();
+
+    $("#Receiver_MszId").on('change', function () {
+        var mszId = parseInt($(this).val());
+        var filteredCategoryOptions = $(categoryOptions).filter(function (idx, elem) {
+            return $(elem).data('msz-id') === mszId;
+        });
+        $("#Receiver_CategoryId option[value]").remove();
+        $("#Receiver_CategoryId").append(filteredCategoryOptions);
+    });
+
+    $("#Receiver_MszId").change();
 });

@@ -70,5 +70,8 @@ namespace Msz.Models
         public int? PrevRevisionId { get; set; }
         public int? NextRevisionId { get; set; }
         public DateTime CreatedDate { get; set; }
+        [Required]
+        public string Creator { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

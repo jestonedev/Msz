@@ -27,13 +27,33 @@ namespace Msz.Services
         {
             return new ReceiverViewModel
             {
-                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).ToList(),
-                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).ToList(),
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
                 Genders = _dbContext.Genders.ToList(),
                 AssigmentForms = _dbContext.AssigmentForms.ToList(),
                 Receiver = new Receiver {
                     Uuid = Guid.NewGuid().ToString(),
                     CreatedDate = DateTime.Now,
+                    Creator = _aclService.GetLogin(),
+                    ReasonPersons = new List<ReasonPerson>()
+                }
+            };
+        }
+
+        public ReceiverViewModel GetViewModel(int receiverId)
+        {
+            return new ReceiverViewModel
+            {
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Genders = _dbContext.Genders.ToList(),
+                AssigmentForms = _dbContext.AssigmentForms.ToList(),
+                Receiver = _dbContext.Receivers
+                    .Include(r => r.ReasonPersons).FirstOrDefault(r => r.Id == receiverId) ?? new Receiver
+                {
+                    Uuid = Guid.NewGuid().ToString(),
+                    CreatedDate = DateTime.Now,
+                    Creator = _aclService.GetLogin(),
                     ReasonPersons = new List<ReasonPerson>()
                 }
             };
@@ -169,6 +189,37 @@ namespace Msz.Services
             }
 
             return mszs;
+        }
+
+        public void Insert(Receiver receiver)
+        {
+            receiver.CreatedDate = DateTime.Now;
+            receiver.Creator = _aclService.GetLogin();
+            _dbContext.Receivers.Add(receiver);
+            _dbContext.SaveChanges();
+        }
+
+        public void Update(Receiver receiver)
+        {
+            var prevReceiver = _dbContext.Receivers.FirstOrDefault(r => r.Id == receiver.Id);
+            if (prevReceiver != null)
+            {
+                receiver.PrevRevisionId = prevReceiver.Id;
+            }
+            receiver.Id = 0;
+            receiver.Uuid = Guid.NewGuid().ToString();
+            Insert(receiver);
+            if (prevReceiver != null)
+            {
+                prevReceiver.NextRevisionId = receiver.Id;
+                _dbContext.Receivers.Update(prevReceiver);
+                _dbContext.SaveChanges();
+            }
+        }
+
+        public void Delete(int receiverId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
