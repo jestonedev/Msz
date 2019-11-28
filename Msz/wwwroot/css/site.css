@@ -162,6 +162,17 @@ input.input-validation-error, select.input-validation-error {
     margin-left: 5pt;
 }
 
+#deleteReceiverModal form {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.msz-pagination > .active > a,
+.msz-pagination > .active > a:hover {
+    background-color: #449d44;
+    border-color: #449d44;
+}
+
 @media(min-width: 768px) {
 }
 
@@ -172,6 +183,11 @@ input.input-validation-error, select.input-validation-error {
 
     .msz-form-group {
         margin-bottom: 15px;
+    }
+
+    .form-horizontal .msz-checkbox {
+        padding-top: 0;
+        margin-bottom: 10px;
     }
 
     .msz-search-btn-group {

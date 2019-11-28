@@ -5,7 +5,6 @@
     todayBtn: "linked",
     language: "ru",
     orientation: "bottom auto",
-    daysOfWeekDisabled: "0,6",
     autoclose: true,
     todayHighlight: true,
     startDate: "01/01/1753",
@@ -266,17 +265,33 @@ $(document).ready(function () {
 
     $("#Receiver_AssigmentFormId").change();
 
-    var categoryOptions = $("#Receiver_CategoryId option[value]").clone(true);
-    $("#Receiver_CategoryId option[value]").remove();
+    var categoryOptions = $("#Receiver_CategoryId option[value], #FilterOptions_CategoryId option[value]").clone(true);
+    $("#Receiver_CategoryId option[value], #FilterOptions_CategoryId option[value]").remove();
 
-    $("#Receiver_MszId").on('change', function () {
+    $("#Receiver_MszId, #FilterOptions_MszId").on('change', function () {
         var mszId = parseInt($(this).val());
         var filteredCategoryOptions = $(categoryOptions).filter(function (idx, elem) {
             return $(elem).data('msz-id') === mszId;
         });
-        $("#Receiver_CategoryId option[value]").remove();
-        $("#Receiver_CategoryId").append(filteredCategoryOptions);
+        $("#Receiver_CategoryId option[value], #FilterOptions_CategoryId option[value]").remove();
+        $("#Receiver_CategoryId, #FilterOptions_CategoryId").append(filteredCategoryOptions);
     });
 
-    $("#Receiver_MszId").change();
+    $("#Receiver_MszId, #FilterOptions_MszId").change();
+
+    $("body").on("click", ".msz-receiver-delete-btn", function (e) {
+        var id = $(this).data('id');
+        var snp = $(this).closest("tr").find(".msz-receiver-snp").text();
+        var modal = $("#deleteReceiverModal");
+        modal.find("#deleteReceiverSnp").text(snp);
+        modal.find("form input[name='id']").val(id);
+        modal.modal('show');
+        e.preventDefault();
+    });
+
+    $(".msz-search-btn, .msz-dd-search-btn ").on("click", function (e) {
+        e.preventDefault();
+        var modal = $("#mszFilterModal");
+        modal.modal('show');
+    });
 });

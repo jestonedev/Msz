@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Msz.Models;
 using System.Xml.Linq;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace Msz.Services
 {
@@ -63,12 +64,12 @@ namespace Msz.Services
         {
             var resultViewModel = new ReceiverIndexViewModel
             {
-                Mszs = _dbContext.Mszs.ToList(),
-                Categories = _dbContext.Categories.ToList(),
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
                 FilterOptions = viewModel?.FilterOptions ?? new ReceiverFilterOptions(),
                 PageOptions = viewModel?.PageOptions ?? new PageOptions()
             };
-            var receivers = _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Where(r => r.NextRevisionId == null);
+            var receivers = _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Where(r => r.NextRevisionId == null && !r.IsDeleted);
             var filteredReceivers = FilterReceivers(resultViewModel.FilterOptions,receivers);
             var receiversCount = filteredReceivers.Count();
             resultViewModel.PageOptions.PageCount = (int)Math.Ceiling(receiversCount / (decimal)resultViewModel.PageOptions.PageSize);
@@ -80,6 +81,85 @@ namespace Msz.Services
 
         private IQueryable<Receiver> FilterReceivers(ReceiverFilterOptions filterOptions, IQueryable<Receiver> receivers)
         {
+            if (!string.IsNullOrEmpty(filterOptions.Surname))
+            {
+                if (filterOptions.IncludeReasonPersonsInFiltering)
+                {
+                    receivers = receivers.Where(r => r.Surname.Contains(filterOptions.Surname) || 
+                        r.ReasonPersons.Any(rp => rp.Surname.Contains(filterOptions.Surname)));
+                } else
+                {
+                    receivers = receivers.Where(r => r.Surname.Contains(filterOptions.Surname));
+                }
+            }
+            if (!string.IsNullOrEmpty(filterOptions.Name))
+            {
+                if (filterOptions.IncludeReasonPersonsInFiltering)
+                {
+                    receivers = receivers.Where(r => r.Name.Contains(filterOptions.Name) ||
+                        r.ReasonPersons.Any(rp => rp.Name.Contains(filterOptions.Name)));
+                }
+                else
+                {
+                    receivers = receivers.Where(r => r.Name.Contains(filterOptions.Name));
+                }
+            }
+            if (!string.IsNullOrEmpty(filterOptions.Patronymic))
+            {
+                if (filterOptions.IncludeReasonPersonsInFiltering)
+                {
+                    receivers = receivers.Where(r => r.Patronymic.Contains(filterOptions.Patronymic) ||
+                        r.ReasonPersons.Any(rp => rp.Patronymic.Contains(filterOptions.Patronymic)));
+                }
+                else
+                {
+                    receivers = receivers.Where(r => r.Patronymic.Contains(filterOptions.Patronymic));
+                }
+            }
+            if (!string.IsNullOrEmpty(filterOptions.Snils))
+            {
+                if (filterOptions.IncludeReasonPersonsInFiltering)
+                {
+                    receivers = receivers.Where(r => r.Snils == filterOptions.Snils ||
+                        r.ReasonPersons.Any(rp => rp.Snils == filterOptions.Snils));
+                }
+                else
+                {
+                    receivers = receivers.Where(r => r.Snils == filterOptions.Snils);
+                }
+            }
+            if (!string.IsNullOrEmpty(filterOptions.Address))
+            {
+                receivers = receivers.Where(r => r.Address != null && r.Address.Contains(filterOptions.Address));
+            }
+            if (filterOptions.MszId != null)
+            {
+                receivers = receivers.Where(r => r.MszId == filterOptions.MszId);
+            }
+            if (filterOptions.CategoryId != null)
+            {
+                receivers = receivers.Where(r => r.CategoryId == filterOptions.CategoryId);
+            }
+            if (filterOptions.DecisionDate != null)
+            {
+                receivers = receivers.Where(r => r.DecisionDate == filterOptions.DecisionDate);
+            }
+            if (filterOptions.DecisionNumber != null)
+            {
+                receivers = receivers.Where(r => r.DecisionNumber != null && r.DecisionNumber.Contains(filterOptions.DecisionNumber));
+            }
+            if (filterOptions.StartDate != null)
+            {
+                receivers = receivers.Where(r => r.StartDate == filterOptions.StartDate);
+            }
+            if (filterOptions.EndDate != null)
+            {
+                receivers = receivers.Where(r => r.EndDate != null && r.EndDate == filterOptions.EndDate);
+            }
+            if (filterOptions.ModifyDate != null)
+            {
+                receivers = receivers.Where(r => r.CreatedDate.Date == filterOptions.ModifyDate);
+            }
             return receivers;
         }
 
@@ -219,7 +299,13 @@ namespace Msz.Services
 
         public void Delete(int receiverId)
         {
-            throw new NotImplementedException();
+            var receiver = _dbContext.Receivers.FirstOrDefault(r => r.Id == receiverId);
+            if (receiver != null)
+            {
+                receiver.IsDeleted = true;
+                _dbContext.Receivers.Update(receiver);
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

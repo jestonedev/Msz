@@ -11,6 +11,8 @@ using Msz.Models;
 using Msz.Services;
 using Msz.ViewModels;
 using System.Xml.XPath;
+using System.Globalization;
+using Msz.Helpers;
 
 namespace Msz.Controllers
 {
@@ -27,6 +29,13 @@ namespace Msz.Controllers
 
         public IActionResult Index(ReceiverIndexViewModel viewModel = null)
         {
+            if (viewModel.FilterOptions != null)
+            {
+                viewModel.FilterOptions.StartDate = DateBinder.FromUrl("FilterOptions.StartDate");
+                viewModel.FilterOptions.EndDate = DateBinder.FromUrl("FilterOptions.EndDate");
+                viewModel.FilterOptions.DecisionDate = DateBinder.FromUrl("FilterOptions.DecisionDate");
+                viewModel.FilterOptions.ModifyDate = DateBinder.FromUrl("FilterOptions.ModifyDate");
+            }
             var resultViewModel = _receiverService.GetIndexViewModel(viewModel);
             return View(resultViewModel);
         }
@@ -82,6 +91,13 @@ namespace Msz.Controllers
                 _receiverService.Update(viewModel.Receiver);
                 return RedirectPermanent(returnUrl);
             }
+        }
+
+        [HttpPost]
+        public IActionResult Delete(string returnUrl, int id)
+        {
+            _receiverService.Delete(id);
+            return RedirectPermanent(returnUrl);
         }
 
         [HttpPost]

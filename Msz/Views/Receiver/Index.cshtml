@@ -15,6 +15,8 @@
         }
         props.Add("FilterOptions." + property.Name, property.GetValue(Model.FilterOptions).ToString());
     }
+
+    var mszs = new SelectList(Model.Mszs, "Id", "Name");
 }
 
 <h2>Получатели мер социальной поддержки</h2>
@@ -155,3 +157,147 @@
         </li>
     </ul>
 </nav>
+
+
+<div class="modal fade" id="deleteReceiverModal" tabindex="-1" role="dialog" aria-labelledby="deleteReceiverModalTitle">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                <h4 class="modal-title" id="deleteReceiverModalTitle">Удалить запись?</h4>
+            </div>
+            <div class="modal-body">
+                Вы действительно хотите удалить получателя «<span id="deleteReceiverSnp">{0}</span>»?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="0" />
+                    <input type="hidden" name="returnUrl" value="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}")" />
+                    <button type="submit" class="btn btn-danger msz-save-btn">Удалить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mszFilterModal" tabindex="-1" role="dialog" aria-labelledby="mszFilterModalTitle">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form asp-action="Index" method="get" class="form-horizontal">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <h4 class="modal-title" id="mszFilterModalTitle">Фильтрация</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.Surname" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <input asp-for="FilterOptions.Surname" class="form-control" />
+                        </div>
+                        <label asp-for="FilterOptions.Name" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <input asp-for="FilterOptions.Name" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.Patronymic" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <input asp-for="FilterOptions.Patronymic" class="form-control" />
+                        </div>
+                        <label asp-for="FilterOptions.Snils" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <input asp-for="FilterOptions.Snils" class="form-control msz-snils-field" />
+                        </div>
+                    </div>
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.Address" class="control-label col-md-2"></label>
+                        <div class="col-md-10">
+                            <input asp-for="FilterOptions.Address" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="checkbox msz-checkbox">
+                        <label class="col-md-offset-2" asp-for="FilterOptions.IncludeReasonPersonsInFiltering">
+                            <input type="checkbox" asp-for="FilterOptions.IncludeReasonPersonsInFiltering" />
+                            Искать в том числе по лицам, являющимся основанием для назначения меры
+                        </label>
+                    </div>
+
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.MszId" class="control-label col-md-2"></label>
+                        <div class="col-md-10">
+                            <select asp-for="FilterOptions.MszId" asp-items="@mszs" class="form-control">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.CategoryId" class="control-label col-md-2"></label>
+                        <div class="col-md-10">
+                            <select asp-for="FilterOptions.CategoryId" class="form-control">
+                                <option></option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option data-msz-id="@category.Msz.Id" value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.DecisionDate" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <div class="input-group date">
+                                <input id="FilterOptions_DecisionDate" name="FilterOptions.DecisionDate" value="@Model.FilterOptions.DecisionDate?.ToString("dd.MM.yyyy")" class="form-control" />
+                                <div class="input-group-addon msz-show-date-picker-btn">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <label asp-for="FilterOptions.DecisionNumber" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <input asp-for="FilterOptions.DecisionNumber" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.StartDate" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <div class="input-group date">
+                                <input id="FilterOptions_StartDate" name="FilterOptions.StartDate" value="@Model.FilterOptions.StartDate?.ToString("dd.MM.yyyy")" class="form-control" />
+                                <div class="input-group-addon msz-show-date-picker-btn">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <label asp-for="FilterOptions.EndDate" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <div class="input-group date">
+                                <input id="FilterOptions_EndDate" name="FilterOptions.EndDate" value="@Model.FilterOptions.EndDate?.ToString("dd.MM.yyyy")" class="form-control" />
+                                <div class="input-group-addon msz-show-date-picker-btn">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group msz-form-group">
+                        <label asp-for="FilterOptions.ModifyDate" class="control-label col-md-2"></label>
+                        <div class="col-md-4">
+                            <div class="input-group date">
+                                <input id="FilterOptions_ModifyDate" name="FilterOptions.ModifyDate" value="@Model.FilterOptions.ModifyDate?.ToString("dd.MM.yyyy")" class="form-control" />
+                                <div class="input-group-addon msz-show-date-picker-btn">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                    <button type="submit" class="btn btn-success">Применить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
