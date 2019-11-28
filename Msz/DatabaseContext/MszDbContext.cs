@@ -16,6 +16,7 @@ namespace Msz.DatabaseContext
         public DbSet<Gender> Genders { get; set; }
         public DbSet<AssigmentForm> AssigmentForms { get; set; }
         public DbSet<Receiver> Receivers { get; set; }
+        public DbSet<AclUser> AclUsers { get; set; }
 
         public MszDbContext()
         {
@@ -38,12 +39,17 @@ namespace Msz.DatabaseContext
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ReceiverConfiguration());
             modelBuilder.ApplyConfiguration(new ReasonPersonConfiguration());
+            modelBuilder.ApplyConfiguration(new AclUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AclPrivilegeConfiguration());
             modelBuilder.Entity<Gender>().HasData(new Gender[] {
                 new Gender { Id = 1, Name = "Мужской" },
                 new Gender { Id = 2, Name = "Женский" }});
             modelBuilder.Entity<AssigmentForm>().HasData(new AssigmentForm[] {
                 new AssigmentForm { Id = 1, Name = "01 Денежная" },
                 new AssigmentForm { Id = 3, Name = "03 Льготы" }});
+            modelBuilder.Entity<AclPrivilege>().HasData(new AssigmentForm[] {
+                new AssigmentForm { Id = 2, Name = "Изменение" }});
+            modelBuilder.Entity<AclUserPrivilege>().HasKey(r => new { r.UserId, r.PrivilegeId, r.MszId });
         }
     }
 }

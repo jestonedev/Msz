@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Msz.DatabaseContext;
 
 namespace Msz.Migrations
 {
     [DbContext(typeof(MszDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20191128064052_Acl")]
+    partial class Acl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,7 @@ namespace Msz.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AclUsers");
+                    b.ToTable("AclUser");
                 });
 
             modelBuilder.Entity("Msz.Models.AclUserPrivilege", b =>
@@ -57,11 +59,7 @@ namespace Msz.Migrations
 
                     b.Property<int>("PrivilegeId");
 
-                    b.Property<int>("MszId");
-
-                    b.HasKey("UserId", "PrivilegeId", "MszId");
-
-                    b.HasIndex("MszId");
+                    b.HasKey("UserId", "PrivilegeId");
 
                     b.HasIndex("PrivilegeId");
 
@@ -259,11 +257,6 @@ namespace Msz.Migrations
 
             modelBuilder.Entity("Msz.Models.AclUserPrivilege", b =>
                 {
-                    b.HasOne("Msz.Models.Msz", "Msz")
-                        .WithMany()
-                        .HasForeignKey("MszId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Msz.Models.AclPrivilege", "Privilege")
                         .WithMany("Users")
                         .HasForeignKey("PrivilegeId")

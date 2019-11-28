@@ -40,7 +40,7 @@ namespace Msz
             services.AddTransient<IMszDbContext, MszDbContext>();
             services.AddTransient<IReceiverService, ReceiverService>();
             services.AddTransient<IAclService, AclService>();
-
+            services.AddSession();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -53,21 +53,22 @@ namespace Msz
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Receiver/Error");
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
             Helpers.AppContext.Configure(app.ApplicationServices
                       .GetRequiredService<IHttpContextAccessor>());
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Receiver}/{action=Index}/{id?}");
             });
+            app.UseCookiePolicy();
         }
     }
 }

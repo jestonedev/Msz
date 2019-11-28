@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Msz.DatabaseContext;
 
 namespace Msz.Migrations
 {
     [DbContext(typeof(MszDbContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20191128065256_AclMszColumn")]
+    partial class AclMszColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +61,7 @@ namespace Msz.Migrations
 
                     b.Property<int>("MszId");
 
-                    b.HasKey("UserId", "PrivilegeId", "MszId");
+                    b.HasKey("UserId", "PrivilegeId");
 
                     b.HasIndex("MszId");
 

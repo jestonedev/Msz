@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20191125032958_AddCategory.Designer.cs" />
     <Compile Remove="Migrations\20191125040605_AddReceiversAndOther.cs" />
     <Compile Remove="Migrations\20191125040605_AddReceiversAndOther.Designer.cs" />
+    <Compile Remove="Migrations\20191128063916_Acl.cs" />
+    <Compile Remove="Migrations\20191128063916_Acl.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

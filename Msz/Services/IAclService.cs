@@ -9,6 +9,11 @@ namespace Msz.Services
     public interface IAclService
     {
         string GetLogin();
+        AclUser GetUser();
         bool CanUpdate(Receiver reciever);
+        bool CanDelete(Receiver reciever);
+        bool CanInsert(Receiver reciever);
+        bool CanInsertAny();
+        bool CanReadAny();
     }
 }

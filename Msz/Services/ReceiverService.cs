@@ -26,10 +26,16 @@ namespace Msz.Services
 
         public ReceiverViewModel GetEmptyViewModel()
         {
+            var user = _aclService.GetUser();
+            var allowedMszs = new List<int>();
+            if (user != null) {
+                allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+            }
             return new ReceiverViewModel
             {
-                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
-                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null && allowedMszs.Contains(r.Id)).OrderBy(r => r.Name).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null && allowedMszs.Contains(r.Msz.Id))
+                    .OrderBy(r => r.Name).ToList(),
                 Genders = _dbContext.Genders.ToList(),
                 AssigmentForms = _dbContext.AssigmentForms.ToList(),
                 Receiver = new Receiver {
@@ -43,10 +49,29 @@ namespace Msz.Services
 
         public ReceiverViewModel GetViewModel(int receiverId)
         {
+            var receiver = _dbContext.Receivers
+                    .Include(r => r.ReasonPersons).FirstOrDefault(r => r.Id == receiverId) ?? new Receiver
+                    {
+                        Uuid = Guid.NewGuid().ToString(),
+                        CreatedDate = DateTime.Now,
+                        Creator = _aclService.GetLogin(),
+                        ReasonPersons = new List<ReasonPerson>()
+                    };
+            var canUpdate = _aclService.CanUpdate(receiver);
+
+            var user = _aclService.GetUser();
+            var allowedMszs = new List<int>();
+            if (user != null)
+            {
+                allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+            }
+
             return new ReceiverViewModel
             {
-                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
-                Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null && (!canUpdate || allowedMszs.Contains(r.Id))).OrderBy(r => r.Name).ToList(),
+                Categories = _dbContext.Categories.Include(r => r.Msz)
+                    .Where(r => r.Msz.NextRevisionId == null && (!canUpdate || allowedMszs.Contains(r.Msz.Id)))
+                    .OrderBy(r => r.Name).ToList(),
                 Genders = _dbContext.Genders.ToList(),
                 AssigmentForms = _dbContext.AssigmentForms.ToList(),
                 Receiver = _dbContext.Receivers

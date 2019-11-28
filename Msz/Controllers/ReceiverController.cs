@@ -29,6 +29,8 @@ namespace Msz.Controllers
 
         public IActionResult Index(ReceiverIndexViewModel viewModel = null)
         {
+            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
+            ViewData["aclService"] = _aclService;
             if (viewModel.FilterOptions != null)
             {
                 viewModel.FilterOptions.StartDate = DateBinder.FromUrl("FilterOptions.StartDate");
@@ -42,6 +44,7 @@ namespace Msz.Controllers
 
         public IActionResult Create(string returnUrl)
         {
+            if (!_aclService.CanInsertAny()) return RedirectToAction("Error", new { Message = "У вас нет прав на добавление получателей МСЗ" });
             ViewData["returnUrl"] = returnUrl;
             return View(_receiverService.GetEmptyViewModel());
         }
@@ -58,13 +61,18 @@ namespace Msz.Controllers
                 return View(newViewModel);
             } else
             {
+                if (!_aclService.CanInsert(viewModel.Receiver))
+                {
+                    return RedirectToAction("Error", new { Message = "У вас нет прав на добавление получателей МСЗ" });
+                }
                 _receiverService.Insert(viewModel.Receiver);
-                return RedirectPermanent(returnUrl);
+                return Redirect(returnUrl);
             }
         }
 
         public IActionResult Update(string returnUrl, int id)
         {
+            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
             ViewData["returnUrl"] = returnUrl;
             ViewData["aclService"] = _aclService;
             var viewModel = _receiverService.GetViewModel(id);
@@ -86,24 +94,27 @@ namespace Msz.Controllers
             {
                 if (!_aclService.CanUpdate(viewModel.Receiver))
                 {
-                    return Forbid();
+                    return RedirectToAction("Error", new { Message = "У вас нет прав на изменение данного получателя МСЗ" });
                 }
                 _receiverService.Update(viewModel.Receiver);
-                return RedirectPermanent(returnUrl);
+                return Redirect(returnUrl);
             }
         }
 
         [HttpPost]
         public IActionResult Delete(string returnUrl, int id)
         {
+            if (!_aclService.CanDelete(_receiverService.GetViewModel(id).Receiver))
+            {
+                return RedirectToAction("Error", new { Message = "У вас нет прав на удаление данного получателя МСЗ" });
+            }
             _receiverService.Delete(id);
-            return RedirectPermanent(returnUrl);
+            return Redirect(returnUrl);
         }
 
         [HttpPost]
         public IActionResult UpdateMszAndCategories(string returnUrl, IFormFile xml)
         {
-            
             var updated = true;
             try
             {
@@ -131,11 +142,10 @@ namespace Msz.Controllers
             ViewData["index"] = 0;
             return View("ReasonPerson", emptyViewModel);
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        
+        public IActionResult Error(string message)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { Message = message });
         }
     }
 }
