@@ -10,6 +10,7 @@ using Msz.Models;
 using System.Xml.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Msz.Services
 {
@@ -29,7 +30,7 @@ namespace Msz.Services
             var user = _aclService.GetUser();
             var allowedMszs = new List<int>();
             if (user != null) {
-                allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+                allowedMszs = _aclService.GetAllowedMszs(user);
             }
             return new ReceiverViewModel
             {
@@ -63,7 +64,7 @@ namespace Msz.Services
             var allowedMszs = new List<int>();
             if (user != null)
             {
-                allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+                allowedMszs = _aclService.GetAllowedMszs(user);
             }
 
             return new ReceiverViewModel
@@ -94,14 +95,20 @@ namespace Msz.Services
                 FilterOptions = viewModel?.FilterOptions ?? new ReceiverFilterOptions(),
                 PageOptions = viewModel?.PageOptions ?? new PageOptions()
             };
-            var receivers = _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Where(r => r.NextRevisionId == null && !r.IsDeleted);
+            var receivers = GetReceivers();
             var filteredReceivers = FilterReceivers(resultViewModel.FilterOptions,receivers);
             var receiversCount = filteredReceivers.Count();
             resultViewModel.PageOptions.PageCount = (int)Math.Ceiling(receiversCount / (decimal)resultViewModel.PageOptions.PageSize);
             resultViewModel.PageOptions.PageIndex = Math.Min(Math.Max(resultViewModel.PageOptions.PageCount - 1, 0), resultViewModel.PageOptions.PageIndex);
-            resultViewModel.Receivers = filteredReceivers.Skip(resultViewModel.PageOptions.PageSize * resultViewModel.PageOptions.PageIndex)
+            resultViewModel.Receivers = filteredReceivers.OrderByDescending(r => r.CreatedDate)
+                .Skip(resultViewModel.PageOptions.PageSize * resultViewModel.PageOptions.PageIndex)
                 .Take(resultViewModel.PageOptions.PageSize).ToList();
             return resultViewModel;
+        }
+
+        private IQueryable<Receiver> GetReceivers()
+        {
+            return _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Include(r => r.ReasonPersons).Where(r => r.NextRevisionId == null && !r.IsDeleted);
         }
 
         private IQueryable<Receiver> FilterReceivers(ReceiverFilterOptions filterOptions, IQueryable<Receiver> receivers)
@@ -186,6 +193,100 @@ namespace Msz.Services
                 receivers = receivers.Where(r => r.CreatedDate.Date == filterOptions.ModifyDate);
             }
             return receivers;
+        }
+
+        public XDocument CreateRecieversXml(ReceiverFilterOptions filterOptions)
+        {
+            XNamespace xmlns = "urn://egisso-ru/types/package-RAF/1.0.7";
+            XNamespace xmlns2 = "urn://egisso-ru/types/assignment-fact/1.0.6";
+            XNamespace xmlns3 = "urn://egisso-ru/types/prsn-info/1.0.3";
+            XNamespace xmlns4 = "urn://x-artefacts-smev-gov-ru/supplementary/commons/1.0.1";
+            XNamespace xmlns5 = "urn://egisso-ru/types/basic/1.0.4";
+            XNamespace xmlns6 = "urn://egisso-ru/msg/10.06.S/1.0.6";
+            XNamespace xmlns7 = "urn://egisso-ru/types/package-RAF/1.0.6";
+
+            var elements = new XElement(xmlns + "elements");
+
+            var doc = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "yes"),
+                new XElement(xmlns6+"data",
+                    new XAttribute("xmlns", "urn://egisso-ru/types/package-RAF/1.0.7"),
+                    new XAttribute(XNamespace.Xmlns + "ns2", xmlns2.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "ns3", xmlns3.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "ns4", xmlns4.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "ns5", xmlns5.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "ns6", xmlns6.NamespaceName),
+                    new XAttribute(XNamespace.Xmlns + "ns7", xmlns7.NamespaceName),
+                    new XElement(xmlns+"package", 
+                        new XElement(xmlns + "packageId", Guid.NewGuid().ToString()),
+                        elements
+                    )
+                )
+            );
+
+            var receivers = GetReceivers();
+            var filteredReceivers = FilterReceivers(filterOptions, receivers);
+
+            foreach(var receiver in filteredReceivers)
+            {
+                XElement reasonPersons = null;
+                if (receiver.ReasonPersons != null && receiver.ReasonPersons.Any())
+                {
+                    reasonPersons = new XElement(xmlns2 + "reasonPersons");
+                    foreach (var person in receiver.ReasonPersons)
+                    {
+                        reasonPersons.Add(
+                            new XElement(xmlns3+ "prsnInfo",
+                                new XElement(xmlns3 + "SNILS", person.Snils.Replace("-", "")),
+                                new XElement(xmlns4 + "FamilyName", person.Surname),
+                                new XElement(xmlns4 + "FirstName", person.Name),
+                                person.Patronymic != null ? new XElement(xmlns4 + "Patronymic", person.Patronymic) : null,
+                                new XElement(xmlns3 + "Gender", person.GenderId == 1 ? "Male" : "Female"),
+                                new XElement(xmlns3 + "BirthDate", person.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
+                            )
+                        );
+                    }
+                }
+
+                elements.Add(new XElement(xmlns + "fact",
+                    new XElement(xmlns2 + "oszCode", "3570.000001"),
+                    new XElement(xmlns2 + "mszReceiver", 
+                        new XElement(xmlns3+"SNILS", receiver.Snils.Replace("-", "")),
+                        new XElement(xmlns4 + "FamilyName", receiver.Surname),
+                        new XElement(xmlns4 + "FirstName", receiver.Name),
+                        receiver.Patronymic != null ? new XElement(xmlns4 + "Patronymic", receiver.Patronymic) : null,
+                        new XElement(xmlns3 + "Gender", receiver.GenderId == 1 ? "Male" : "Female"),
+                        new XElement(xmlns3 + "BirthDate", receiver.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
+                    ),
+                    reasonPersons,
+                    new XElement(xmlns2 + "lmszId", receiver.Msz.Guid),
+                    new XElement(xmlns2 + "categoryId", receiver.Category.Guid),
+                    new XElement(xmlns2 + "decisionDate", receiver.DecisionDate.ToString("yyyy-MM-dd")+"+03:00"),
+                    new XElement(xmlns2 + "dateStart", receiver.StartDate.ToString("yyyy-MM-dd") + "+03:00"),
+                    receiver.EndDate != null ? new XElement(xmlns2 + "dateFinish", receiver.EndDate.Value.ToString("yyyy-MM-dd") + "+03:00") : null,
+                    new XElement(xmlns2 + "needsCriteria", 
+                        new XElement(xmlns2 + "usingSign", "false")
+                    ),
+                    new XElement(xmlns2 + "assignmentInfo", 
+                        receiver.AssigmentFormId == 1 ? 
+                        new XElement(xmlns2+ "monetaryForm",
+                            new XElement(xmlns2+"amount", receiver.Amount.ToString(new CultureInfo("ru-RU")))) : 
+                        new XElement(xmlns2 + "exemptionForm",
+                            new XElement(xmlns2 + "amount", receiver.Amount.ToString(new CultureInfo("ru-RU")).Replace(",00", "")),
+                            new XElement(xmlns2 + "measuryCode", "05"),
+                            new XElement(xmlns2 + "monetization", "false"),
+                            new XElement(xmlns2 + "equivalentAmount",
+                                receiver.EquivalentAmount != null ?
+                                receiver.EquivalentAmount.Value.ToString(new CultureInfo("ru-RU")).Replace(",00", "") : "0")
+                        )
+                    
+                    ),
+                    new XElement(xmlns + "uuid", Guid.NewGuid().ToString())
+                    )
+                );
+            }
+
+            return doc;
         }
 
         public bool UpdateMszAndCategories(XDocument xml)

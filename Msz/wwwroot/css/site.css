@@ -105,6 +105,12 @@ td.msz-receiver-cell .msz-receiver-snils {
     margin-top: 0;
 }
 
+.msz-pagination > li > a, .msz-pagination > li > span,
+.msz-pagination > li > a:hover, .msz-pagination > li > span:hover,
+.msz-pagination > li > a:focus, .msz-pagination > li > span:focus {
+    color: #1e711e;
+}
+
 .field-validation-error {
     color: #b94a48;
 }

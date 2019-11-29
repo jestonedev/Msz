@@ -1,4 +1,5 @@
 ﻿using Msz.Models;
+using Msz.Options;
 using Msz.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Msz.Services
     {
         ReceiverIndexViewModel GetIndexViewModel(ReceiverIndexViewModel viewModel = null);
         bool UpdateMszAndCategories(XDocument xml);
-
+        XDocument CreateRecieversXml(ReceiverFilterOptions filterOptions);
         ReceiverViewModel GetEmptyViewModel();
         ReceiverViewModel GetViewModel(int receiverId);
         void Insert(Receiver receiver);

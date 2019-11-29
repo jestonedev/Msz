@@ -13,7 +13,7 @@ namespace Msz.Options
 
         public PageOptions()
         {
-            PageSize = 20;
+            PageSize = 10;
             PageIndex = 0;
         }
     }

@@ -10,6 +10,7 @@ namespace Msz.Services
     {
         string GetLogin();
         AclUser GetUser();
+        List<int> GetAllowedMszs(AclUser user);
         bool CanUpdate(Receiver reciever);
         bool CanDelete(Receiver reciever);
         bool CanInsert(Receiver reciever);

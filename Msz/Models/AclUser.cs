@@ -13,5 +13,6 @@ namespace Msz.Models
         [Required]
         public string Login { get; set; }
         public List<AclUserPrivilege> Privileges { get; set; }
+        public string EgissoId { get; set; }
     }
 }

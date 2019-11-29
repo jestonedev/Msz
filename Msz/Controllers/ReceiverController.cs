@@ -13,6 +13,9 @@ using Msz.ViewModels;
 using System.Xml.XPath;
 using System.Globalization;
 using Msz.Helpers;
+using Msz.Options;
+using System.IO;
+using System.Text;
 
 namespace Msz.Controllers
 {
@@ -115,7 +118,14 @@ namespace Msz.Controllers
         [HttpPost]
         public IActionResult UpdateMszAndCategories(string returnUrl, IFormFile xml)
         {
+            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
+
             var updated = true;
+            if (xml.FileName.Substring(0, 10) != _aclService.GetUser().EgissoId)
+            {
+                TempData["Error"] = "Ошибка загрузки. Файл принадлежит другому пользователю";
+                return RedirectPermanent(returnUrl);
+            }
             try
             {
                 XDocument xmlDoc = XDocument.Load(xml.OpenReadStream());
@@ -133,6 +143,29 @@ namespace Msz.Controllers
                 TempData["Success"] = "МСЗ и категории успешно загружены";
             }
             return RedirectPermanent(returnUrl);
+        }
+
+        public IActionResult DownloadFilteredRecievers(ReceiverFilterOptions filterOptions)
+        {
+            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
+            filterOptions.StartDate = DateBinder.FromUrl("FilterOptions.StartDate");
+            filterOptions.EndDate = DateBinder.FromUrl("FilterOptions.EndDate");
+            filterOptions.DecisionDate = DateBinder.FromUrl("FilterOptions.DecisionDate");
+            filterOptions.ModifyDate = DateBinder.FromUrl("FilterOptions.ModifyDate");
+            var user = _aclService.GetUser();
+            var egissoId = user.EgissoId ?? "0000000000";
+            XDocument xml = _receiverService.CreateRecieversXml(filterOptions);
+            var xmlStream = new MemoryStream();
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Encoding = new UTF8Encoding(false)
+            };
+            using (XmlWriter w = XmlWriter.Create(xmlStream, settings))
+            {
+                xml.Save(w);
+            }
+            xmlStream.Seek(0, SeekOrigin.Begin);
+            return File(xmlStream, "text/xml", string.Format("{0}-10.06.S-{1}.xml", egissoId, DateTime.Now.AddHours(-5).ToString("yyyy-MM-ddTHH-mm-ss.mmm")));
         }
 
         public IActionResult GetEmptyReasonPerson()

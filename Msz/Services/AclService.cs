@@ -12,6 +12,7 @@ namespace Msz.Services
     {
         private readonly IMszDbContext _dbContext;
         private AclUser currentUser = null;
+        private List<int> allowedMszs = null;
 
         public AclService(IMszDbContext dbContext)
         {
@@ -37,8 +38,38 @@ namespace Msz.Services
             if (reciever == null) return false;
             var user = GetUser();
             if (user == null) return false;
-            var allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+            var allowedMszs = GetAllowedMszs(user);
             return reciever.IsDeleted == false && reciever.NextRevisionId == null && allowedMszs.Contains(reciever.MszId);
+        }
+
+        public List<int> GetAllowedMszs(AclUser user)
+        {
+            if (allowedMszs != null) return allowedMszs;
+            var mszIds = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+            allowedMszs = new List<int>();
+            foreach(var mszId in mszIds)
+            {
+                var localMsz = _dbContext.Mszs.FirstOrDefault(r => r.Id == mszId);
+                allowedMszs.Add(localMsz.Id);
+                while (localMsz?.PreviousRevisionId != null)
+                {
+                    localMsz = _dbContext.Mszs.FirstOrDefault(r => r.Id == localMsz.PreviousRevisionId);
+                    if (localMsz != null)
+                    {
+                        allowedMszs.Add(localMsz.Id);
+                    }
+                }
+                localMsz = _dbContext.Mszs.FirstOrDefault(r => r.Id == mszId);
+                while (localMsz?.NextRevisionId != null)
+                {
+                    localMsz = _dbContext.Mszs.FirstOrDefault(r => r.Id == localMsz.NextRevisionId);
+                    if (localMsz != null)
+                    {
+                        allowedMszs.Add(localMsz.Id);
+                    }
+                }
+            }
+            return allowedMszs;
         }
 
         public bool CanDelete(Receiver reciever)
@@ -58,7 +89,7 @@ namespace Msz.Services
             if (reciever == null) return false;
             var user = GetUser();
             if (user == null) return false;
-            var allowedMszs = user.Privileges.Where(r => r.PrivilegeId == 2).Select(r => r.MszId).ToList();
+            var allowedMszs = GetAllowedMszs(user);
             return allowedMszs.Contains(reciever.MszId);
         }
 
