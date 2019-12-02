@@ -167,6 +167,15 @@ namespace Msz.Services
             if (filterOptions.MszId != null)
             {
                 receivers = receivers.Where(r => r.MszId == filterOptions.MszId);
+            } else
+            {
+                var allowedMszs = new List<int>();
+                var user = _aclService.GetUser();
+                if (user != null)
+                {
+                    allowedMszs = _aclService.GetAllowedMszs(user);
+                }
+                receivers = receivers.Where(r => allowedMszs.Contains(r.MszId));
             }
             if (filterOptions.CategoryId != null)
             {
