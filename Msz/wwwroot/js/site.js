@@ -7,10 +7,7 @@
     orientation: "bottom auto",
     autoclose: true,
     todayHighlight: true,
-    startDate: "01/01/1753",
-    onSelect: function () {
-        $(this).focusout();
-    }
+    startDate: "01/01/1753"
 };
 
 if ($.validator !== undefined) {
@@ -33,10 +30,10 @@ if ($.validator !== undefined) {
 }
 
 $(document).ready(function () {
-    $(".date input").datepicker(datePickerOptions);
-    $(".date input").each(function (idx, elem) {
-        if ($(elem).val() === "01.01.0001") $(elem).val('');
+    $(".date input").datepicker(datePickerOptions).on('changeDate', function () {
+        $(this).focusout();
     });
+    $(".date input").inputmask("99.99.9999");
 
     $(".msz-snils-field").inputmask("999-999-999-99");
 
@@ -294,4 +291,6 @@ $(document).ready(function () {
         var modal = $("#mszFilterModal");
         modal.modal('show');
     });
+
+
 });
