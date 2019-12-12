@@ -130,6 +130,7 @@ $(document).ready(function () {
         var modal = $(".msz-reason-persons-modal-wrapper .modal").last();
         modal.find('.date input').datepicker(datePickerOptions);
         modal.find(".msz-snils-field").inputmask("999-999-999-99");
+        modal.find(".date input").inputmask("99.99.9999");
         modal.on('show.bs.modal', showReasonPersonModal);
         modal.on('hidden.bs.modal', hideReasonPersonModal);
         modal.keypress(function (e) {

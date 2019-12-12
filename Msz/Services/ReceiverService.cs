@@ -286,7 +286,7 @@ namespace Msz.Services
                             new XElement(xmlns2 + "monetization", "false"),
                             new XElement(xmlns2 + "equivalentAmount",
                                 receiver.EquivalentAmount != null ?
-                                receiver.EquivalentAmount.Value.ToString(new CultureInfo("ru-RU")).Replace(",00", "") : "0")
+                                receiver.EquivalentAmount.Value.ToString(new CultureInfo("ru-RU")).Replace(",00", "").Replace(",", ".") : "0")
                         )
                     
                     ),
