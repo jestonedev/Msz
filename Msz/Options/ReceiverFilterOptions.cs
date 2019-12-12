@@ -33,6 +33,7 @@ namespace Msz.Options
         public DateTime? EndDate { get; set; }
         [Display(Name = "Дата изменения")]
         public DateTime? ModifyDate { get; set; }
+        public bool CreateByMe { get; set; }
 
         public ReceiverFilterOptions()
         {

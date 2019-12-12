@@ -201,6 +201,10 @@ namespace Msz.Services
             {
                 receivers = receivers.Where(r => r.CreatedDate.Date == filterOptions.ModifyDate);
             }
+            if (filterOptions.CreateByMe)
+            {
+                receivers = receivers.Where(r => r.Creator.Contains(_aclService.GetLogin()));
+            }
             return receivers;
         }
 
