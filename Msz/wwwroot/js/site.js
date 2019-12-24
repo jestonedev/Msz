@@ -75,6 +75,9 @@ $(document).ready(function () {
             if ($(elem).val() === "01.01.0001") $(elem).val('');
         });
 
+        $(this).find("input, select").removeClass('input-validation-error');
+        $(this).find('span.field-validation-error').text('');
+
         $(this).data("surname", $(this).find("input[id$='__Surname']").val());
         $(this).data("name", $(this).find("input[id$='__Name']").val());
         $(this).data("patronymic", $(this).find("input[id$='__Patronymic']").val());
@@ -152,9 +155,20 @@ $(document).ready(function () {
     });
     $(".modal").data('valid', 'valid');
 
-    $('body').on('click', '.msz-save-btn', function () {
+    $('body').on('click', '.msz-save-btn', function (e) {
         var modal = $(this).closest(".modal");
         $("form").valid();
+        var validator = $("form").validate();
+
+        var snils = $(modal).find(".msz-snils-field").val();
+        var isValid = snilsIsValid(snils);
+        errors = {};
+        if (!isValid) {
+            errors[$(modal).find(".msz-snils-field").prop("name")] = "Указано некорректно значение";
+            validator.showErrors(errors);
+            e.preventDefault();
+        }
+
         $("form").find("input, select").each(function (idx, elem) {
             if ($(elem).closest('.modal').length === 0) {
                 $(elem).removeClass('input-validation-error');
@@ -293,5 +307,132 @@ $(document).ready(function () {
         modal.modal('show');
     });
 
+    $(".msz-submit-btn").on("click", function (e) {
+        var form = $(this).closest("form");
+        form.find("input, select").each(function (idx, elem) {
+            $(elem).removeClass('input-validation-error');
+        });
+        $('span.field-validation-error').each(function (idx, elem) {
+            var input = $(elem).closest('div').find('input');
+            if (!input.hasClass('input-validation-error')) {
+                $(elem).text('');
+            }
+        });
+
+        var validator = form.validate();
+        var formValid = form.valid();
+        var startDate = convertStrToDate($("#Receiver_StartDate").val());
+        var endDate = convertStrToDate($("#Receiver_EndDate").val());
+        var errors = {};
+        if (startDate !== null && endDate !== null) {
+            if (endDate < startDate) {
+                errors["Receiver.EndDate"] = "Дата окончания не может быть меньше даты начала";
+                formValid = false;
+            }
+        }
+
+        var snils = $("#Receiver_Snils").val();
+        var isValid = snilsIsValid(snils);
+        if (!isValid) {
+            errors["Receiver.Snils"] = "Указано некорректно значение";
+            formValid = false;
+        }
+
+        if (!formValid) {
+            e.preventDefault();
+            validator.showErrors(errors);
+        }
+        return formValid;
+    });
+
+    $("#Receiver_EndDate, #Receiver_StartDate").on("focusout", function (e) {
+        var form = $(this).closest("form");
+
+        var validator = form.validate();
+
+        $("#Receiver_EndDate").removeClass('input-validation-error');
+        $("#Receiver_EndDate").closest("div.input-group").next().text('');
+
+        var startDate = convertStrToDate($("#Receiver_StartDate").val());
+        var endDate = convertStrToDate($("#Receiver_EndDate").val());
+
+        if (startDate === null || endDate === null) return;
+
+        var errors = {};
+        if (endDate < startDate) {
+            errors["Receiver.EndDate"] = "Дата окончания не может быть меньше даты начала";
+            validator.showErrors(errors);
+            $("#Receiver_StartDate").removeClass('input-validation-error');
+            $("#Receiver_StartDate").closest("div.input-group").next().text('');
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $("body").on("focusout", ".msz-snils-field", function (e) {
+        var form = $(this).closest("form");
+
+        var validator = form.validate();
+
+        $(this).removeClass('input-validation-error');
+        $(this).next().text('');
+
+        var snils = $(this).val();
+
+        var isValid = snilsIsValid(snils);
+
+        var errors = {};
+        if (!isValid) {
+            errors[$(this).prop("name")] = "Указано некорректно значение";
+            validator.showErrors(errors);
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    function convertStrToDate(strDate)
+    {
+        if (strDate === null) return null;
+        var dateParts = strDate.split(".");
+        if (dateParts.length !== 3) {
+            return null;
+        }
+        return new Date(dateParts[2] | 0, (dateParts[1] | 0) - 1, dateParts[0] | 0);
+    }
+
+    function snilsIsValid(snils) {
+        if (typeof snils === 'number') {
+            snils = snils.toString();
+        } else if (typeof snils !== 'string') {
+            snils = '';
+        }
+        snils = snils.replace(/-/g, '');
+        if (snils.length !== 11 || /[^0-9]/.test(snils)) {
+            return false;
+        } 
+
+        var sum = 0;
+        for (var i = 0; i < 9; i++) {
+            sum += parseInt(snils[i]) * (9 - i);
+        }
+        var checkDigit = 0;
+        if (sum < 100) {
+            checkDigit = sum;
+        } else
+        if (sum === 100)
+        {
+            checkDigit = 0;
+        } else {
+            checkDigit = parseInt(sum % 101);
+            if (checkDigit === 100) {
+                checkDigit = 0;
+            }
+        }
+        if (checkDigit === parseInt(snils.slice(-2))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 });

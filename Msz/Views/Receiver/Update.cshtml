@@ -31,7 +31,7 @@
     <div class="text-center msz-edit-btns">
         @if (_aclService.CanUpdate(Model.Receiver))
         {
-            <input type="submit" class="btn btn-success msx-submit-btn" value="Сохранить" />
+            <input type="submit" class="btn btn-success msz-submit-btn" value="Сохранить" />
         }
         <a class="btn btn-success @(_aclService.CanUpdate(Model.Receiver) ? "msz-cancel-btn" : "")" href="@(ViewData["returnUrl"])">Отменить</a>
     </div>
