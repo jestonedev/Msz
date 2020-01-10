@@ -51,5 +51,10 @@ namespace Msz.DatabaseContext
                 new AssigmentForm { Id = 2, Name = "Изменение" }});
             modelBuilder.Entity<AclUserPrivilege>().HasKey(r => new { r.UserId, r.PrivilegeId, r.MszId });
         }
+
+        public int ActualizateReceiversMszIds()
+        {
+            return Database.ExecuteSqlCommand("EXECUTE dbo.ActualizateReceiversMszIds");
+        }
     }
 }

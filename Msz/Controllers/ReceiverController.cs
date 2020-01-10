@@ -121,11 +121,6 @@ namespace Msz.Controllers
             if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
 
             var updated = true;
-            if (xml.FileName.Substring(0, 10) != _aclService.GetUser().EgissoId)
-            {
-                TempData["Error"] = "Ошибка загрузки. Файл принадлежит другому пользователю";
-                return RedirectPermanent(returnUrl);
-            }
             try
             {
                 XDocument xmlDoc = XDocument.Load(xml.OpenReadStream());

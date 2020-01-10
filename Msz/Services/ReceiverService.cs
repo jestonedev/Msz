@@ -327,6 +327,7 @@ namespace Msz.Services
             }
             if (mszs == null || !mszs.Any())
                 return false;
+            _dbContext.ActualizateReceiversMszIds();
             return true;
         }
 

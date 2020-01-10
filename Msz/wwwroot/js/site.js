@@ -168,7 +168,11 @@ $(document).ready(function () {
             validator.showErrors(errors);
             e.preventDefault();
         }
-
+        if ($("form").find(".msz-snils-field").filter(function (idx, elem) { return $(elem).val() === snils; }).length > 1) {
+            errors[$(modal).find(".msz-snils-field").prop("name")] = "Лицо с таким СНИЛС уже добавлено";
+            validator.showErrors(errors);
+            e.preventDefault();
+        }
         $("form").find("input, select").each(function (idx, elem) {
             if ($(elem).closest('.modal').length === 0) {
                 $(elem).removeClass('input-validation-error');

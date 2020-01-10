@@ -17,5 +17,6 @@ namespace Msz.DatabaseContext
         DbSet<AclUser> AclUsers { get; set; }
 
         int SaveChanges();
+        int ActualizateReceiversMszIds();
     }
 }
