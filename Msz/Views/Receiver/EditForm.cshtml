@@ -217,7 +217,9 @@
         }
         else
         {
-            <input asp-for="Receiver.Msz.Name" class="form-control" readonly />
+            <div class="msz-name-wrapper">
+                <input asp-for="Receiver.Msz.Name" title="@Model.Receiver.Msz.Name" class="form-control" readonly />
+            </div>
         }
     </div>
 </div>

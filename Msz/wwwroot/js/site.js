@@ -286,6 +286,12 @@ $(document).ready(function () {
 
     $("#Receiver_MszId, #FilterOptions_MszId").on('change', function () {
         var mszId = parseInt($(this).val());
+        var mszOption = $(this).find("option[value='" + mszId + "']");
+        var title = "";
+        if (mszOption.length > 0) {
+            title = mszOption.text();
+        }
+        $(this).prop("title", title);
         var filteredCategoryOptions = $(categoryOptions).filter(function (idx, elem) {
             return $(elem).data('msz-id') === mszId;
         });
