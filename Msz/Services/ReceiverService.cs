@@ -108,7 +108,7 @@ namespace Msz.Services
 
         private IQueryable<Receiver> GetReceivers()
         {
-            return _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Include(r => r.ReasonPersons).Where(r => r.NextRevisionId == null && !r.IsDeleted);
+            return _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Include(r => r.ReasonPersons).Where(r => !r.IsDeleted);
         }
 
         private IQueryable<Receiver> FilterReceivers(ReceiverFilterOptions filterOptions, IQueryable<Receiver> receivers)
@@ -197,13 +197,18 @@ namespace Msz.Services
             {
                 receivers = receivers.Where(r => r.EndDate != null && r.EndDate == filterOptions.EndDate);
             }
-            if (filterOptions.ModifyDate != null)
-            {
-                receivers = receivers.Where(r => r.CreatedDate.Date == filterOptions.ModifyDate);
-            }
             if (filterOptions.CreateByMe)
             {
                 receivers = receivers.Where(r => r.Creator.Contains(_aclService.GetLogin()));
+            }
+            if (filterOptions.ModifyDate != null)
+            {
+                receivers = receivers.Where(r => r.CreatedDate.Date == filterOptions.ModifyDate);
+                var ids = receivers.Select(r => r.Id).ToList();
+                receivers = receivers.Where(r => !ids.Any(ri => ri == r.NextRevisionId));
+            } else
+            {
+                receivers = receivers.Where(r => r.NextRevisionId == null);
             }
             return receivers;
         }
