@@ -45,7 +45,7 @@
                     <label asp-for="Receiver.ReasonPersons[index].BirthDate" class="control-label col-md-2 msz-required"></label>
                     <div class="col-md-4">
                         <div class="input-group date">
-                            <input asp-for="Receiver.ReasonPersons[index].BirthDate" value="@(Model.Receiver.ReasonPersons[index].BirthDate == DateTime.MinValue ? "" : Model.Receiver.ReasonPersons[index].BirthDate.ToString("dd.MM.yyyy"))"  autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                            <input asp-for="Receiver.ReasonPersons[index].BirthDate" value="@(Model.Receiver.ReasonPersons[index].BirthDate == DateTime.MinValue ? "" : Model.Receiver.ReasonPersons[index].BirthDate.ToString("dd.MM.yyyy"))" type="text"  autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
                             <div class="input-group-addon msz-show-date-picker-btn">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>

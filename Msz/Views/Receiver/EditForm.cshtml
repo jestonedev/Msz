@@ -81,7 +81,7 @@
         @if (editableFields)
         {
             <div class="input-group date">
-                <input asp-for="Receiver.BirthDate" value="@(Model.Receiver.BirthDate == DateTime.MinValue ? "" : Model.Receiver.BirthDate.ToString("dd.MM.yyyy"))" asp-format="{0:dd.MM.yyyy}" autocomplete="off" class="form-control" />
+                <input asp-for="Receiver.BirthDate" value="@(Model.Receiver.BirthDate == DateTime.MinValue ? "" : Model.Receiver.BirthDate.ToString("dd.MM.yyyy"))" asp-format="{0:dd.MM.yyyy}" type="text" autocomplete="off" class="form-control" />
                 <div class="input-group-addon msz-show-date-picker-btn">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -90,7 +90,7 @@
         }
         else
         {
-            <input asp-for="Receiver.BirthDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+            <input asp-for="Receiver.BirthDate" type="text" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
         }
     </div>
 
@@ -253,7 +253,7 @@
         @if (editableFields)
         {
             <div class="input-group date">
-                <input asp-for="Receiver.DecisionDate" value="@(Model.Receiver.DecisionDate == DateTime.MinValue ? "" : Model.Receiver.DecisionDate.ToString("dd.MM.yyyy"))" asp-format="{0:dd.MM.yyyy}" autocomplete="off" class="form-control" />
+                <input asp-for="Receiver.DecisionDate" value="@(Model.Receiver.DecisionDate == DateTime.MinValue ? "" : Model.Receiver.DecisionDate.ToString("dd.MM.yyyy"))" type="text" asp-format="{0:dd.MM.yyyy}" autocomplete="off" class="form-control" />
                 <div class="input-group-addon msz-show-date-picker-btn">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -262,7 +262,7 @@
         }
         else
         {
-            <input asp-for="Receiver.DecisionDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+            <input asp-for="Receiver.DecisionDate" type="text" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
         }
     </div>
     <label asp-for="Receiver.DecisionNumber" class="control-label col-md-2"></label>
@@ -284,7 +284,7 @@
         @if (editableFields)
         {
             <div class="input-group date">
-                <input asp-for="Receiver.StartDate" value="@(Model.Receiver.StartDate == DateTime.MinValue ? "" : Model.Receiver.StartDate.ToString("dd.MM.yyyy"))" autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <input asp-for="Receiver.StartDate" value="@(Model.Receiver.StartDate == DateTime.MinValue ? "" : Model.Receiver.StartDate.ToString("dd.MM.yyyy"))" type="text" autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
                 <div class="input-group-addon msz-show-date-picker-btn">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -293,7 +293,7 @@
         }
         else
         {
-            <input asp-for="Receiver.StartDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+            <input asp-for="Receiver.StartDate" type="text" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
         }
     </div>
     <label asp-for="Receiver.EndDate" class="control-label col-md-2"></label>
@@ -301,7 +301,7 @@
         @if (editableFields)
         {
             <div class="input-group date">
-                <input asp-for="Receiver.EndDate" value="@(Model.Receiver.EndDate == DateTime.MinValue || Model.Receiver.EndDate == null ? "" : Model.Receiver.EndDate.Value.ToString("dd.MM.yyyy"))" autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                <input asp-for="Receiver.EndDate" value="@(Model.Receiver.EndDate == DateTime.MinValue || Model.Receiver.EndDate == null ? "" : Model.Receiver.EndDate.Value.ToString("dd.MM.yyyy"))" type="text" autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
                 <div class="input-group-addon msz-show-date-picker-btn">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -310,7 +310,7 @@
         }
         else
         {
-            <input asp-for="Receiver.EndDate" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
+            <input asp-for="Receiver.EndDate" type="text" asp-format="{0:dd.MM.yyyy}" class="form-control" readonly />
         }
     </div>
 </div>
