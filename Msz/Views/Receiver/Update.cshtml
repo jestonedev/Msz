@@ -34,5 +34,9 @@
             <input type="submit" class="btn btn-success msz-submit-btn" value="Сохранить" />
         }
         <a class="btn btn-success @(_aclService.CanUpdate(Model.Receiver) ? "msz-cancel-btn" : "")" href="@(ViewData["returnUrl"])">Отменить</a>
+        @if (_aclService.CanUpdate(Model.Receiver))
+        {
+            <a asp-action="Copy" asp-route-id="@Model.Receiver.Id" asp-route-returnUrl="@(ViewData["returnUrl"])" class='btn btn-success msz-copy-btn'>Копировать</a>
+        }
     </div>
 </form>

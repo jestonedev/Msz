@@ -160,7 +160,7 @@ input.input-validation-error, select.input-validation-error {
     margin-top: 20px;
 }
 
-.msz-cancel-btn {
+.msz-cancel-btn, .msz-copy-btn {
     margin-left: 5pt;
 }
 

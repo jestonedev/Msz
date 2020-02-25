@@ -178,22 +178,14 @@ namespace Msz.Controllers
         }
         public IActionResult Copy(string returnUrl, int id)
         {
-            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
+            if (!_aclService.CanInsertAny()) return RedirectToAction("Error", new { Message = "У вас нет прав на добавление получателей МСЗ" });
             ViewData["returnUrl"] = returnUrl;
-            ViewData["aclService"] = _aclService;
             var viewModel = _receiverService.GetViewModel(id);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public IActionResult Copy(ReceiverViewModel viewModel, string returnUrl)
-        {
-            if (!_aclService.CanUpdate(viewModel.Receiver))
-            {
-                return RedirectToAction("Error", new { Message = "У вас нет прав на изменение данного получателя МСЗ" });
-            }
-            _receiverService.Copy(viewModel.Receiver);
-            return Redirect(returnUrl);
+            viewModel.Receiver.Id = 0;
+            viewModel.Receiver.Uuid = Guid.NewGuid().ToString();
+            viewModel.Receiver.CreatedDate = DateTime.Now;
+            viewModel.Receiver.Creator = _aclService.GetLogin();
+            return View("Create", viewModel);
         }
     }
 }
