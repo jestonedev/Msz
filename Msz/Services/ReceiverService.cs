@@ -452,5 +452,13 @@ namespace Msz.Services
                 _dbContext.SaveChanges();
             }
         }
+        public void Copy(Receiver receiver)
+        {
+            receiver.CreatedDate = DateTime.Now;
+            receiver.Creator = _aclService.GetLogin();
+            receiver.Id = 0;
+            receiver.Uuid = Guid.NewGuid().ToString();
+            Insert(receiver);
+        }
     }
 }

@@ -19,5 +19,6 @@ namespace Msz.Services
         void Insert(Receiver receiver);
         void Update(Receiver receiver);
         void Delete(int receiverId);
+        void Copy(Receiver receiver);
     }
 }

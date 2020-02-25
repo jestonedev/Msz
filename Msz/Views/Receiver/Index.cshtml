@@ -120,6 +120,7 @@
                                     <button data-id="@receiver.Id" class='btn btn-danger msz-receiver-delete-btn'><span class='msz-glyphicon-only glyphicon glyphicon-remove' aria-hidden='true'></span></button>
                                 }
                             </div>
+                            <a asp-action="Copy" asp-route-id="@receiver.Id" asp-route-returnUrl="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}")" class='btn btn-success'><span class='msz-glyphicon-only glyphicon glyphicon-copy' aria-hidden='true'></span></a>
                         </td>
                     </tr>
                 }

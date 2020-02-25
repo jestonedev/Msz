@@ -81,6 +81,7 @@ namespace Msz.Controllers
             var viewModel = _receiverService.GetViewModel(id);
             return View(viewModel);
         }
+        
 
         [HttpPost]
         public IActionResult Update(ReceiverViewModel viewModel, string returnUrl)
@@ -174,6 +175,25 @@ namespace Msz.Controllers
         public IActionResult Error(string message)
         {
             return View(new ErrorViewModel { Message = message });
+        }
+        public IActionResult Copy(string returnUrl, int id)
+        {
+            if (!_aclService.CanReadAny()) return RedirectToAction("Error", new { Message = "У вас нет прав доступа к этому приложению" });
+            ViewData["returnUrl"] = returnUrl;
+            ViewData["aclService"] = _aclService;
+            var viewModel = _receiverService.GetViewModel(id);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Copy(ReceiverViewModel viewModel, string returnUrl)
+        {
+            if (!_aclService.CanUpdate(viewModel.Receiver))
+            {
+                return RedirectToAction("Error", new { Message = "У вас нет прав на изменение данного получателя МСЗ" });
+            }
+            _receiverService.Copy(viewModel.Receiver);
+            return Redirect(returnUrl);
         }
     }
 }
