@@ -348,6 +348,14 @@ $(document).ready(function () {
             formValid = false;
         }
 
+        var assigmentFormId = $("#Receiver_AssigmentFormId").val();
+        var amount = $("#Receiver_Amount").val();
+        if (assigmentFormId === "3" && (amount.indexOf(',') !== -1 || parseInt(amount) > 100)) {
+            errors["Receiver.Amount"] = "Указанное значение не соответствует форме предоставления";
+            formValid = false;
+        }
+
+
         if (!formValid) {
             e.preventDefault();
             validator.showErrors(errors);
@@ -394,6 +402,26 @@ $(document).ready(function () {
         var errors = {};
         if (!isValid) {
             errors[$(this).prop("name")] = "Указано некорректно значение";
+            validator.showErrors(errors);
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $("body").on("focusout", "#Receiver_AssigmentFormId, #Receiver_Amount", function (e) {
+
+        var form = $(this).closest("form");
+
+        var validator = form.validate();
+
+        $("#Receiver_Amount").removeClass('input-validation-error');
+        $("#Receiver_Amount").next().text('');
+
+        var assigmentFormId = $("#Receiver_AssigmentFormId").val();
+        var amount = $("#Receiver_Amount").val();
+        var errors = {};
+        if (assigmentFormId === "3" && (amount.indexOf(',') !== -1 || parseInt(amount) > 100)) {
+            errors["Receiver.Amount"] = "Указанное значение не соответствует форме предоставления";
             validator.showErrors(errors);
             e.preventDefault();
             return false;
