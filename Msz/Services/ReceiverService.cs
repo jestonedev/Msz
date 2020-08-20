@@ -90,7 +90,7 @@ namespace Msz.Services
         {
             var resultViewModel = new ReceiverIndexViewModel
             {
-                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
+                Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null && !r.Inactive).OrderBy(r => r.Name).ToList(),
                 Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null).OrderBy(r => r.Name).ToList(),
                 FilterOptions = viewModel?.FilterOptions ?? new ReceiverFilterOptions(),
                 PageOptions = viewModel?.PageOptions ?? new PageOptions()

@@ -22,5 +22,6 @@ namespace Msz.Models
         public DateTime CreatedDate { get; set; }
         [Required]
         public string Creator { get; set; }
+        public bool Inactive { get; set; }
     }
 }
