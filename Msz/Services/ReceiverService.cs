@@ -359,6 +359,12 @@ namespace Msz.Services
             var package = root.Element(XName.Get("package", xmlns));
             if (package == null)
             {
+                xmlns = "urn://egisso-ru/types/package-LMSZ/1.0.8";
+                xmlns2 = "urn://egisso-ru/types/local-MSZ/1.0.7";
+            }
+            package = root.Element(XName.Get("package", xmlns));
+            if (package == null)
+            {
                 return null;
             }
             var elements = package.Element(XName.Get("elements", xmlns));
