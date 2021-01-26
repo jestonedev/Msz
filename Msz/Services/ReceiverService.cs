@@ -215,20 +215,20 @@ namespace Msz.Services
 
         public XDocument CreateRecieversXml(ReceiverFilterOptions filterOptions)
         {
-            XNamespace xmlns = "urn://egisso-ru/types/package-RAF/1.0.7";
-            XNamespace xmlns2 = "urn://egisso-ru/types/assignment-fact/1.0.6";
+            XNamespace xmlns = "urn://egisso-ru/types/package-RAF/1.0.8";
+            XNamespace xmlns2 = "urn://egisso-ru/types/assignment-fact/1.0.7";
             XNamespace xmlns3 = "urn://egisso-ru/types/prsn-info/1.0.3";
             XNamespace xmlns4 = "urn://x-artefacts-smev-gov-ru/supplementary/commons/1.0.1";
             XNamespace xmlns5 = "urn://egisso-ru/types/basic/1.0.4";
-            XNamespace xmlns6 = "urn://egisso-ru/msg/10.06.S/1.0.6";
-            XNamespace xmlns7 = "urn://egisso-ru/types/package-RAF/1.0.6";
+            XNamespace xmlns6 = "urn://egisso-ru/types/prsn-basis/1.0.1";
+            XNamespace xmlns7 = "urn://egisso-ru/msg/10.06.S/1.0.7";
 
             var elements = new XElement(xmlns + "elements");
 
             var doc = new XDocument(
                 new XDeclaration("1.0", "UTF-8", "yes"),
-                new XElement(xmlns6+"data",
-                    new XAttribute("xmlns", "urn://egisso-ru/types/package-RAF/1.0.7"),
+                new XElement(xmlns7+"data",
+                    new XAttribute("xmlns", "urn://egisso-ru/types/package-RAF/1.0.8"),
                     new XAttribute(XNamespace.Xmlns + "ns2", xmlns2.NamespaceName),
                     new XAttribute(XNamespace.Xmlns + "ns3", xmlns3.NamespaceName),
                     new XAttribute(XNamespace.Xmlns + "ns4", xmlns4.NamespaceName),
@@ -254,13 +254,16 @@ namespace Msz.Services
                     foreach (var person in receiver.ReasonPersons)
                     {
                         reasonPersons.Add(
-                            new XElement(xmlns3+ "prsnInfo",
-                                new XElement(xmlns3 + "SNILS", person.Snils.Replace("-", "")),
-                                new XElement(xmlns4 + "FamilyName", person.Surname),
-                                new XElement(xmlns4 + "FirstName", person.Name),
-                                person.Patronymic != null ? new XElement(xmlns4 + "Patronymic", person.Patronymic) : null,
-                                new XElement(xmlns3 + "Gender", person.GenderId == 1 ? "Male" : "Female"),
-                                new XElement(xmlns3 + "BirthDate", person.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
+                            new XElement(xmlns6+"basisPerson",
+                                new XElement(xmlns3+ "prsnInfo",
+                                    new XElement(xmlns3 + "SNILS", person.Snils.Replace("-", "")),
+                                    new XElement(xmlns4 + "FamilyName", person.Surname?.Trim()),
+                                    new XElement(xmlns4 + "FirstName", person.Name?.Trim()),
+                                    person.Patronymic != null ? new XElement(xmlns4 + "Patronymic", person.Patronymic?.Trim()) : null,
+                                    new XElement(xmlns3 + "Gender", person.GenderId == 1 ? "Male" : "Female"),
+                                    new XElement(xmlns3 + "BirthDate", person.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
+                                ),
+                                new XElement(xmlns6+ "kinshipTypeCode", "0000000")
                             )
                         );
                     }
@@ -270,9 +273,9 @@ namespace Msz.Services
                     new XElement(xmlns2 + "oszCode", "3570.000001"),
                     new XElement(xmlns2 + "mszReceiver", 
                         new XElement(xmlns3+"SNILS", receiver.Snils.Replace("-", "")),
-                        new XElement(xmlns4 + "FamilyName", receiver.Surname),
-                        new XElement(xmlns4 + "FirstName", receiver.Name),
-                        receiver.Patronymic != null ? new XElement(xmlns4 + "Patronymic", receiver.Patronymic) : null,
+                        new XElement(xmlns4 + "FamilyName", receiver.Surname?.Trim()),
+                        new XElement(xmlns4 + "FirstName", receiver.Name?.Trim()),
+                        receiver.Patronymic != null ? new XElement(xmlns4 + "Patronymic", receiver.Patronymic?.Trim()) : null,
                         new XElement(xmlns3 + "Gender", receiver.GenderId == 1 ? "Male" : "Female"),
                         new XElement(xmlns3 + "BirthDate", receiver.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
                     ),
