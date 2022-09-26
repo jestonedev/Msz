@@ -368,6 +368,13 @@ namespace Msz.Services
             package = root.Element(XName.Get("package", xmlns));
             if (package == null)
             {
+                xmlns = "urn://egisso-ru/types/package-LMSZ/2.1.0";
+                xmlns2 = "urn://egisso-ru/types/local-MSZ/2.1.0";
+            }
+            package = root.Element(XName.Get("package", xmlns));
+
+            if (package == null)
+            {
                 return null;
             }
             var elements = package.Element(XName.Get("elements", xmlns));
@@ -385,7 +392,10 @@ namespace Msz.Services
                     return null;
                 }
                 var mszGuid = localMSZ.Element(XName.Get("ID", xmlns2));
-                if (mszGuid == null) return null;
+                if (mszGuid == null)
+                    mszGuid = localMSZ.Element(XName.Get("id", xmlns2));
+                if (mszGuid == null)
+                    return null;
                 msz.Guid = mszGuid.Value;
                 var mszCode = localMSZ.Element(XName.Get("code", xmlns2));
                 if (mszCode == null) return null;
@@ -401,6 +411,7 @@ namespace Msz.Services
                 {
                     var category = new Category();
                     var guid = locaCategory.Element(XName.Get("ID", xmlns2));
+                    if (guid == null) guid = locaCategory.Element(XName.Get("id", xmlns2));
                     if (guid == null) return null;
                     category.Guid = guid.Value;
                     var code = locaCategory.Element(XName.Get("code", xmlns2));
@@ -415,6 +426,10 @@ namespace Msz.Services
                 msz.CreatedDate = DateTime.Parse(lastChanging.Value);
 
                 var previousGuid = localMSZ.Element(XName.Get("previousID", xmlns));
+                if (previousGuid == null)
+                {
+                    previousGuid = localMSZ.Element(XName.Get("previousId", xmlns));
+                }
                 if (previousGuid != null)
                 {
                     msz.PreviousGuid = previousGuid.Value;
