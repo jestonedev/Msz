@@ -17,6 +17,7 @@ namespace Msz.DatabaseContext
         public DbSet<AssigmentForm> AssigmentForms { get; set; }
         public DbSet<Receiver> Receivers { get; set; }
         public DbSet<AclUser> AclUsers { get; set; }
+        public DbSet<KinshipRelation> KinshipRelation { get; set; }
 
         public MszDbContext()
         {

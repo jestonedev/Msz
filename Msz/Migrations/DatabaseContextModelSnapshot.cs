@@ -128,7 +128,22 @@ namespace Msz.Migrations
                         new { Id = 2, Name = "Женский" }
                     );
                 });
+            modelBuilder.Entity("Msz.Models.KinshipRelation", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                b.Property<string>("KinshipTypeCode")
+                    .IsRequired();
+                b.Property<string>("NameRelations")
+                    .IsRequired();
+
+                b.HasKey("Id");
+
+                b.ToTable("KinshipRelation");
+              
+            });
             modelBuilder.Entity("Msz.Models.Msz", b =>
                 {
                     b.Property<int>("Id")
@@ -176,6 +191,8 @@ namespace Msz.Migrations
 
                     b.Property<string>("Snils")
                         .IsRequired();
+
+                    b.Property<int>("KinshipRelationId");
 
                     b.Property<string>("Surname")
                         .IsRequired();

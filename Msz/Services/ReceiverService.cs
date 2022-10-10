@@ -38,6 +38,7 @@ namespace Msz.Services
                 Categories = _dbContext.Categories.Include(r => r.Msz).Where(r => r.Msz.NextRevisionId == null && allowedMszs.Contains(r.Msz.Id))
                     .OrderBy(r => r.Name).ToList(),
                 Genders = _dbContext.Genders.ToList(),
+                KinshipRelations = _dbContext.KinshipRelation.ToList(),
                 AssigmentForms = _dbContext.AssigmentForms.ToList(),
                 Receiver = new Receiver {
                     Uuid = Guid.NewGuid().ToString(),
@@ -66,7 +67,7 @@ namespace Msz.Services
             {
                 allowedMszs = _aclService.GetAllowedMszs(user);
             }
-
+           
             return new ReceiverViewModel
             {
                 Mszs = _dbContext.Mszs.Where(r => r.NextRevisionId == null && (!canUpdate || allowedMszs.Contains(r.Id))).OrderBy(r => r.Name).ToList(),
@@ -74,6 +75,7 @@ namespace Msz.Services
                     .Where(r => r.Msz.NextRevisionId == null && (!canUpdate || allowedMszs.Contains(r.Msz.Id)))
                     .OrderBy(r => r.Name).ToList(),
                 Genders = _dbContext.Genders.ToList(),
+                KinshipRelations = _dbContext.KinshipRelation.ToList(),
                 AssigmentForms = _dbContext.AssigmentForms.ToList(),
                 Receiver = _dbContext.Receivers
                     .Include(r => r.ReasonPersons).FirstOrDefault(r => r.Id == receiverId) ?? new Receiver
@@ -108,7 +110,8 @@ namespace Msz.Services
 
         private IQueryable<Receiver> GetReceivers()
         {
-            return _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category).Include(r => r.ReasonPersons).Where(r => !r.IsDeleted);
+            return _dbContext.Receivers.Include(r => r.Msz).Include(r => r.Category)
+                .Include(r => r.ReasonPersons).ThenInclude(c=> c.KinshipRelation).Where(r => !r.IsDeleted);
         }
 
         private IQueryable<Receiver> FilterReceivers(ReceiverFilterOptions filterOptions, IQueryable<Receiver> receivers)
@@ -263,7 +266,7 @@ namespace Msz.Services
                                     new XElement(xmlns3 + "Gender", person.GenderId == 1 ? "Male" : "Female"),
                                     new XElement(xmlns3 + "BirthDate", person.BirthDate.ToString("yyyy-MM-dd") + "+03:00")
                                 ),
-                                new XElement(xmlns6+ "kinshipTypeCode", "0000000")
+                                new XElement(xmlns6+ "kinshipTypeCode", person.KinshipRelation.KinshipTypeCode)
                             )
                         );
                     }

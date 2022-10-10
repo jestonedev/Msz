@@ -31,5 +31,10 @@ namespace Msz.Models
         public string Snils { get; set; }
         public int ReceiverId { get; set; }
         public Receiver Receiver { get; set; }
+
+        [Required(ErrorMessage = "Поле является обязательным для заполнения")]
+        [Display(Name = "Родственная связь")]
+        public int KinshipRelationId { get; set; }
+        public KinshipRelation KinshipRelation { get; set; }
     }
 }

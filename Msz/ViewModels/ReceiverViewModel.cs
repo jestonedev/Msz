@@ -12,6 +12,7 @@ namespace Msz.ViewModels
         public List<Models.Msz> Mszs { get; set; }
         public List<Category> Categories { get; set; }
         public List<Gender> Genders { get; set; }
+        public List<KinshipRelation> KinshipRelations { get; set; }
         public List<AssigmentForm> AssigmentForms { get; set; }
     }
 }

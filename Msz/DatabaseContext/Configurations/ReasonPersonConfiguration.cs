@@ -15,6 +15,8 @@ namespace Msz.DatabaseContext.Configurations
         {
             builder.HasOne(p => p.Gender).WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(p => p.KinshipRelation).WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

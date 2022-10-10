@@ -5,6 +5,7 @@
     Layout = null;
     var index = ViewData.ContainsKey("index") ? (int)ViewData["index"] : 0;
     var genders = new SelectList(Model.Genders, "Id", "Name");
+    var kinship = new SelectList(Model.KinshipRelations, "Id", "NameRelations");
 }
 
 <div class="modal fade" id="mszReasonPersonsModal@(index)" tabindex="-1" role="dialog" aria-labelledby="mszReasonPersonsModal@(index)Title">
@@ -45,7 +46,7 @@
                     <label asp-for="Receiver.ReasonPersons[index].BirthDate" class="control-label col-md-2 msz-required"></label>
                     <div class="col-md-4">
                         <div class="input-group date">
-                            <input asp-for="Receiver.ReasonPersons[index].BirthDate" value="@(Model.Receiver.ReasonPersons[index].BirthDate == DateTime.MinValue ? "" : Model.Receiver.ReasonPersons[index].BirthDate.ToString("dd.MM.yyyy"))" type="text"  autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
+                            <input asp-for="Receiver.ReasonPersons[index].BirthDate" value="@(Model.Receiver.ReasonPersons[index].BirthDate == DateTime.MinValue ? "" : Model.Receiver.ReasonPersons[index].BirthDate.ToString("dd.MM.yyyy"))" type="text" autocomplete="off" asp-format="{0:dd.MM.yyyy}" class="form-control" />
                             <div class="input-group-addon msz-show-date-picker-btn">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
@@ -57,6 +58,15 @@
                     <div class="col-md-4">
                         <input asp-for="Receiver.ReasonPersons[index].Snils" class="form-control msz-snils-field" />
                         <span asp-validation-for="Receiver.ReasonPersons[index].Snils" class="field-validation-error"></span>
+                    </div>
+                </div>
+                <div class="form-group msz-form-group">
+                    <label asp-for="Receiver.ReasonPersons[index].KinshipRelationId" class="control-label col-md-2 msz-required"></label>
+                    <div class="col-md-4">
+                        <select  asp-for="Receiver.ReasonPersons[index].KinshipRelationId" asp-items="@kinship" class="form-control">
+                            <option></option>
+                        </select>
+                        <span asp-validation-for="Receiver.ReasonPersons[index].KinshipRelationId" class="field-validation-error"></span>
                     </div>
                 </div>
             </div>

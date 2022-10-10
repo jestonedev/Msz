@@ -15,6 +15,7 @@ namespace Msz.DatabaseContext
         DbSet<AssigmentForm> AssigmentForms { get; set; }
         DbSet<Receiver> Receivers { get; set; }
         DbSet<AclUser> AclUsers { get; set; }
+        DbSet<KinshipRelation> KinshipRelation { get; set; }
 
         int SaveChanges();
         int ActualizateReceiversMszIds();
